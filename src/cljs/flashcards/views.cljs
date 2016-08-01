@@ -37,7 +37,7 @@
   [re-com/button
    :label "Next"
    :class "fc-button"
-   :on-click #(println "gotcha")
+   :on-click #(re-frame/dispatch [:choose-next-word])
    :tooltip "Score me, and go to next word"])
 
 (defn link-to-about-page []
