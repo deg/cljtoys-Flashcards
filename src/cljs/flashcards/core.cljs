@@ -12,6 +12,7 @@
 (defn dev-setup []
   (when config/debug?
     (println "dev mode")
+    (devtools/set-pref! :install-sanity-hints true) ;; See https://github.com/binaryage/cljs-devtools/releases/tag/v0.4.0
     (devtools/install!)))
 
 (defn mount-root []
