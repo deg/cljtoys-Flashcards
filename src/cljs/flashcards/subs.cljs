@@ -5,9 +5,19 @@
 (re-frame/register-sub
  :name
  (fn [db]
-   (reaction (:name @db))))
+   (reaction (:name (:static @db)))))
 
 (re-frame/register-sub
  :version
  (fn [db]
-   (reaction (:version @db))))
+   (reaction (:version (:static @db)))))
+
+(re-frame/register-sub
+ :word
+ (fn [db]
+   (reaction (:word (:dynamic @db)))))
+
+(re-frame/register-sub
+ :choices
+ (fn [db]
+   (reaction (:choices (:dynamic @db)))))
