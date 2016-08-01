@@ -16,7 +16,7 @@
 
 (defn full-card []
   (let [word (re-frame/subscribe [:word])
-        choices (re-frame/subscribe [:choices])]
+        translation-choices (re-frame/subscribe [:translation-choices])]
     [re-com/v-box
      :class "card"
      :children [[:div {:class "subject-word"} @word]
@@ -24,14 +24,14 @@
                  :class "target-words"
                  :children [[re-com/h-box
                              :children [[re-com/button
-                                         :label (get @choices 0)]
+                                         :label (get @translation-choices 0)]
                                         [re-com/button
-                                         :label (get @choices 1)]]]
+                                         :label (get @translation-choices 1)]]]
                             [re-com/h-box
                              :children [[re-com/button
-                                          :label (get @choices 2)]
+                                          :label (get @translation-choices 2)]
                                          [re-com/button
-                                          :label (get @choices 3)]]]]]]]))
+                                          :label (get @translation-choices 3)]]]]]]]))
 
 (defn next-button []
   [re-com/button

@@ -3,12 +3,15 @@
 (def default-db
   {:static {:name "Flashcards"
             :version "0.0.1"
-            :valid-options {:show-choices [true false]
-                            :direction [:new-to-known :known-to-new :both]}}
-   :options {:show-choices true
-             :direction :both}
+            :valid-options {:direction [:new-to-known :known-to-new :both]
+                            :show-choices [true false]
+                            :num-choices (range 2 10)}}
+   :options {:direction :both
+             :num-choices 4
+             :show-choices true}
    :dynamic {:word "?"
-             :choices ["?1" "?2" "?3" "?4"]
+             :translation "?"
+             :translation-choices ["?1" "?2" "?3" "?4"]
              }
    :dictionary {"من" "of"
                 "و" "and"

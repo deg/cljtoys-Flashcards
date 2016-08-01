@@ -14,9 +14,13 @@
 
 (re-frame/register-handler
  :choose-next-word
- (fn [db [_ _]]
+ (fn [db _]
    (let [dictionary (:dictionary db)
-         [[word trans1] [_ trans2] [_ trans3] [_ trans4]] (take 4 (shuffle dictionary))
-         translations (shuffle [trans1 trans2 trans3 trans4])]
-     (assoc-in (assoc-in db [:dynamic :word] word)
-               [:dynamic :choices] translations))))
+         num-choices (get-in db [:options :num-choices])
+         [[word trans1] & other-pairs] (take num-choices (shuffle dictionary))
+         other-trans (map second other-pairs)
+         translations (shuffle (conj other-trans trans1))
+         db (assoc-in db [:dynamic :word] word)
+         db (assoc-in db [:dynamic :translation] trans1)
+         db (assoc-in db [:dynamic :translation-choices] translations)]
+     db)))

@@ -18,9 +18,9 @@
    (reaction (:word (:dynamic @db)))))
 
 (re-frame/register-sub
- :choices
+ :translation-choices
  (fn [db]
-   (reaction (:choices (:dynamic @db)))))
+   (reaction (:translation-choices (:dynamic @db)))))
 
 (re-frame/register-sub
  :active-panel
