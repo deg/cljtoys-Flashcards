@@ -10,24 +10,35 @@
         version (re-frame/subscribe [:version])]
     (fn []
       [re-com/v-box
-       :children [[re-com/title
-                   :label (str "Hello from " @name " prototype v" @version)
-                   :level :level2]
-                  [re-com/title
-                   :label (str "Created by David Goldfarb and Aviva Goldfarb")
-                   :level :level3]]])))
+       :children [[re-com/title :label (str @name) :level :level2]
+                  [re-com/title :label (str " prototype v" @version) :level :level3]
+                  [re-com/title :label (str "Created by David Goldfarb and Aviva Goldfarb") :level :level3]]])))
 
 (defn full-card []
   (let [word (re-frame/subscribe [:word])
         choices (re-frame/subscribe [:choices])]
-    [:div {:class "card"}
-     [:div {:class "subject-word"} @word]
-     [:div {:class "target-words"}
-      "choice 1: " (get @choices 0)
-      "; choice 2: " (get @choices 1)
-      "; choice 3: " (get @choices 2)
-      "; choice 4: " (get @choices 3)
-      ]]))
+    [re-com/v-box
+     :class "card"
+     :children [[:div {:class "subject-word"} @word]
+                [re-com/v-box
+                 :class "target-words"
+                 :children [[re-com/h-box
+                             :children [[re-com/button
+                                         :label (get @choices 0)]
+                                        [re-com/button
+                                         :label (get @choices 1)]]]
+                            [re-com/h-box
+                             :children [[re-com/button
+                                          :label (get @choices 2)]
+                                         [re-com/button
+                                          :label (get @choices 3)]]]]]]]))
+
+(defn next-button []
+  [re-com/button
+   :label "Next"
+   :class "fc-button"
+   :on-click #(println "gotcha")
+   :tooltip "Score me, and go to next word"])
 
 (defn link-to-about-page []
   [re-com/hyperlink-href
@@ -36,8 +47,13 @@
 
 (defn home-panel []
   [re-com/v-box
+   :align :start
+   :margin "1em"
    :gap "1em"
-   :children [[home-title] [full-card] [link-to-about-page]]])
+   :children [[home-title]
+              [full-card]
+              [next-button]
+              [link-to-about-page]]])
 
 
 ;; about
