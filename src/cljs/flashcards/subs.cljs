@@ -6,3 +6,8 @@
  :name
  (fn [db]
    (reaction (:name @db))))
+
+(re-frame/register-sub
+ :version
+ (fn [db]
+   (reaction (:version @db))))
