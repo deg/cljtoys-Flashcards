@@ -11,7 +11,7 @@
              :show-choices true}
    :dynamic {:word "?"
              :translation "?"
-             :translation-choices ["?1" "?2" "?3" "?4"]
+             :translation-choices (mapv (partial str "?") (range 10))
              }
    :dictionary {"من" "of"
                 "و" "and"

@@ -14,29 +14,30 @@
                   [re-com/title :label (str " prototype v" @version) :level :level3]
                   [re-com/title :label (str "Created by David Goldfarb and Aviva Goldfarb") :level :level3]]])))
 
+(defn card [n]
+  (let [translation (re-frame/subscribe [:translation-choice n])]
+    [re-com/button
+     :class "fc-card rc-button btn btn-default"
+     :label @translation]))
+
 (defn full-card []
   (let [word (re-frame/subscribe [:word])
-        translation-choices (re-frame/subscribe [:translation-choices])]
+        num-choices (re-frame/subscribe [:num-choices])]
     [re-com/v-box
-     :class "card"
+     :class "fc-full-card"
      :children [[:div {:class "subject-word"} @word]
                 [re-com/v-box
                  :class "target-words"
-                 :children [[re-com/h-box
-                             :children [[re-com/button
-                                         :label (get @translation-choices 0)]
-                                        [re-com/button
-                                         :label (get @translation-choices 1)]]]
-                            [re-com/h-box
-                             :children [[re-com/button
-                                          :label (get @translation-choices 2)]
-                                         [re-com/button
-                                          :label (get @translation-choices 3)]]]]]]]))
+                 :children (let [width (if (<= @num-choices 4) 2 3)
+                                 rows (partition width width nil (range @num-choices))]
+                             (mapv (fn [row]
+                                     [re-com/h-box
+                                      :children (mapv (fn [n] [card n]) row)]) rows))]]]))
 
 (defn next-button []
   [re-com/button
    :label "Next"
-   :class "fc-button"
+   :class "fc-button rc-button btn btn-default"
    :on-click #(re-frame/dispatch [:choose-next-word])
    :tooltip "Score me, and go to next word"])
 
