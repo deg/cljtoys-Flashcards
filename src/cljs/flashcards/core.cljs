@@ -4,6 +4,7 @@
               [devtools.core :as devtools]
               [flashcards.handlers]
               [flashcards.subs]
+              [flashcards.routes :as routes]
               [flashcards.views :as views]
               [flashcards.config :as config]))
 
@@ -18,6 +19,7 @@
                   (.getElementById js/document "app")))
 
 (defn ^:export init []
+  (routes/app-routes)
   (re-frame/dispatch-sync [:initialize-db])
   (dev-setup)
   (mount-root))
