@@ -20,6 +20,18 @@
     [re-com/v-box
      :children [(str @option-value @option-choices)]]))
 
+(defn options []
+  [re-com/v-box
+   :children [[option-chooser :direction]
+              [option-chooser :show-choices]
+              [option-chooser :num-choices]]])
+
+(defn score-bar []
+  (let [score (re-frame/subscribe [:score])
+        multiplier (re-frame/subscribe [:multiplier])]
+    [re-com/v-box
+     :children [(str "Score: [" @score " x" @multiplier "]")]]))
+
 (defn card [n]
   (let [translation (re-frame/subscribe [:translation-choice n])]
     [re-com/button
@@ -31,10 +43,7 @@
         num-choices (re-frame/subscribe [:num-choices])]
     [re-com/v-box
      :class "fc-full-card"
-     :children [[option-chooser :direction]
-                [option-chooser :show-choices]
-                [option-chooser :num-choices]
-                [:div {:class "subject-word"} @word]
+     :children [[:div {:class "subject-word"} @word]
                 [re-com/v-box
                  :class "target-words"
                  :children (let [width (if (<= @num-choices 4) 2 3)
@@ -61,6 +70,8 @@
    :margin "1em"
    :gap "1em"
    :children [[home-title]
+              [options]
+              [score-bar]
               [full-card]
               [next-button]
               [link-to-about-page]]])

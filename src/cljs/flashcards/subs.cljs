@@ -14,6 +14,8 @@
 (simple-sub :translation-choices [:dynamic :translation-choices])
 (simple-sub :num-choices [:options :num-choices])
 (simple-sub :active-panel [:active-panel])
+(simple-sub :score [:dynamic :score])
+(simple-sub :multiplier [:dynamic :multiplier])
 
 
 (re-frame/register-sub
