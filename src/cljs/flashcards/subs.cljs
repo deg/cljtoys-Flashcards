@@ -2,47 +2,32 @@
     (:require-macros [reagent.ratom :refer [reaction]])
     (:require [re-frame.core :as re-frame]))
 
-(re-frame/register-sub
- :name
- (fn [db]
-   (reaction (:name (:static @db)))))
+(defn simple-sub [key path]
+  (re-frame/register-sub
+   key
+   (fn [db]
+     (-> @db (get-in path) reaction))))
 
-(re-frame/register-sub
- :version
- (fn [db]
-   (reaction (:version (:static @db)))))
+(simple-sub :name [:static :name])
+(simple-sub :version [:static :version])
+(simple-sub :word [:dynamic :word])
+(simple-sub :translation-choices [:dynamic :translation-choices])
+(simple-sub :num-choices [:options :num-choices])
+(simple-sub :active-panel [:active-panel])
 
-(re-frame/register-sub
- :word
- (fn [db]
-   (reaction (:word (:dynamic @db)))))
-
-(re-frame/register-sub
- :translation-choices
- (fn [db]
-   (reaction (:translation-choices (:dynamic @db)))))
 
 (re-frame/register-sub
  :translation-choice
  (fn [db [_ n]]
-   (reaction (get (:translation-choices (:dynamic @db)) n))))
-
-(re-frame/register-sub
- :num-choices
- (fn [db _]
-   (reaction (get-in @db [:options :num-choices]))))
+   (-> @db (get-in [:dynamic :translation-choices n]) reaction)))
 
 (re-frame/register-sub
  :option
  (fn [db [_ option]]
-   (reaction (get-in @db [:options option]))))
+   (-> @db (get-in [:options option]) reaction)))
 
 (re-frame/register-sub
  :valid-options
  (fn [db [_ option]]
-   (reaction (get-in @db [:static :valid-options option]))))
+   (-> @db (get-in [:static :valid-options option]) reaction)))
 
-(re-frame/register-sub
- :active-panel
- (fn [db _]
-   (reaction (:active-panel @db))))
