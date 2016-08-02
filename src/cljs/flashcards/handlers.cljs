@@ -15,6 +15,14 @@
    (assoc db :active-panel active-panel)))
 
 (re-frame/register-handler
+ :score-answer
+ (fn [db [_ this-answer]]
+   (let [correct-answer (get-in db [:dynamic :translation])]
+     (println "ANSWER: " this-answer correct-answer))
+   (re-frame/dispatch [:choose-next-word])
+   db))
+
+(re-frame/register-handler
  :choose-next-word
  (fn [db _]
    (let [dictionary (:dictionary db)

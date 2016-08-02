@@ -40,7 +40,7 @@
   (let [translation (re-frame/subscribe [:translation-choice n])]
     [re-com/button
      :class "fc-card rc-button btn btn-default"
-     :on-click #(re-frame/dispatch [:choose-next-word])
+     :on-click #(re-frame/dispatch [:score-answer @translation])
      :label @translation]))
 
 (defn full-card []
