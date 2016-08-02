@@ -33,6 +33,8 @@
 
   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
+  :uberjar-name "flashcards.jar"
+
   :profiles
   {:dev
    {:dependencies [

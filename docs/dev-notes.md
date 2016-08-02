@@ -2,7 +2,7 @@
 
 ### How to run
 
-This project was initialized with `lein new re-frame flashcards2 +cider +test +compojure +garden +re-com +secretary`
+This project was initialized with `lein new re-frame flashcards +cider +test +handler +garden +re-com +routes`
 
 It can be run from shell with `rlwrap lein figwheel dev` and then browsing to
 [http://localhost:3449/](http://localhost:3449/)
