@@ -5,4 +5,5 @@
 /resources/public/css/
 /resources/public/js/compiled
 /target
+fc_docker/*.jar
 out

@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# Author: David Goldfarb (deg@degel.com)
+# Copyright (c) 2016 David Goldfarb
+
+echo Stopping old Docker instances:
+docker ps -q  | xargs docker kill
+echo Removing old Docker instances:
+docker ps -qa | xargs docker rm
+echo Remove dangling volumes
+docker volume ls -qf dangling=true | xargs docker volume rm
+
+echo Compiling project
+lein clean && lein uberjar && ln target/flashcards-0.1.0-SNAPSHOT-standalone.jar fc_docker/
+
+echo Building and launching Docker
+docker build -t fc_docker fc_docker
+docker run -d --name flashcards -p 80:3000 fc_docker
