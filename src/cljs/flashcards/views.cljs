@@ -5,13 +5,17 @@
 
 ;; home
 
-(defn home-title []
-  (let [name (re-frame/subscribe [:name])
-        version (re-frame/subscribe [:version])]
+(defn title []
+  (let [name (re-frame/subscribe [:name])]
     (fn []
       [re-com/v-box
-       :children [[re-com/title :label (str @name) :level :level2]
-                  [re-com/title :label (str " prototype v" @version) :level :level3]
+       :children [[re-com/title :label (str @name) :level :level2]]])))
+
+(defn credits []
+  (let [version (re-frame/subscribe [:version])]
+    (fn []
+      [re-com/v-box
+       :children [[re-com/title :label (str " prototype v" @version) :level :level3]
                   [re-com/title :label (str "Created by David Goldfarb and Aviva Goldfarb") :level :level3]]])))
 
 (defn option-chooser [option]
@@ -36,6 +40,7 @@
   (let [translation (re-frame/subscribe [:translation-choice n])]
     [re-com/button
      :class "fc-card rc-button btn btn-default"
+     :on-click #(re-frame/dispatch [:choose-next-word])
      :label @translation]))
 
 (defn full-card []
@@ -52,28 +57,42 @@
                                      [re-com/h-box
                                       :children (mapv (fn [n] [card n]) row)]) rows))]]]))
 
-(defn next-button []
-  [re-com/button
-   :label "Next"
-   :class "fc-button rc-button btn btn-default"
-   :on-click #(re-frame/dispatch [:choose-next-word])
-   :tooltip "Score me, and go to next word"])
-
 (defn link-to-about-page []
   [re-com/hyperlink-href
-   :label "go to About Page"
+   :label "(About)"
    :href "#/about"])
+
+(defn link-to-play-page []
+  [re-com/hyperlink-href
+   :label "Start game"
+   :href "#/play"])
+
+(defn link-to-home-page []
+  [re-com/hyperlink-href
+   :label "go to Home Page"
+   :href "#/"])
 
 (defn home-panel []
   [re-com/v-box
    :align :start
    :margin "1em"
    :gap "1em"
-   :children [[home-title]
+   :children [[title]
+              [credits]
               [options]
+              [link-to-play-page]
+              [link-to-about-page]]])
+
+
+(defn play-panel []
+  [re-com/v-box
+   :align :start
+   :margin "1em"
+   :gap "1em"
+   :children [[title]
               [score-bar]
               [full-card]
-              [next-button]
+              [link-to-home-page]
               [link-to-about-page]]])
 
 
@@ -84,21 +103,18 @@
    :label "This is the About Page."
    :level :level1])
 
-(defn link-to-home-page []
-  [re-com/hyperlink-href
-   :label "go to Home Page"
-   :href "#/"])
-
 (defn about-panel []
   [re-com/v-box
    :gap "1em"
-   :children [[about-title] [link-to-home-page]]])
+   :children [[about-title]
+              [link-to-home-page]]])
 
 
 ;; main
 
 (defmulti panels identity)
 (defmethod panels :home-panel [] [home-panel])
+(defmethod panels :play-panel [] [play-panel])
 (defmethod panels :about-panel [] [about-panel])
 (defmethod panels :default [] [:div])
 

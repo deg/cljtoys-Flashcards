@@ -10,6 +10,8 @@
 (re-frame/register-handler
  :set-active-panel
  (fn [db [_ active-panel]]
+   (when (= active-panel :play-panel)
+     (re-frame/dispatch [:choose-next-word]))
    (assoc db :active-panel active-panel)))
 
 (re-frame/register-handler

@@ -24,6 +24,9 @@
   (defroute "/about" []
     (re-frame/dispatch [:set-active-panel :about-panel]))
 
+  (defroute "/play" []
+    (re-frame/dispatch [:set-active-panel :play-panel]))
+
 
   ;; --------------------
   (hook-browser-navigation!))
