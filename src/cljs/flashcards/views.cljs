@@ -14,6 +14,12 @@
                   [re-com/title :label (str " prototype v" @version) :level :level3]
                   [re-com/title :label (str "Created by David Goldfarb and Aviva Goldfarb") :level :level3]]])))
 
+(defn option-chooser [option]
+  (let [option-value (re-frame/subscribe [:option option])
+        option-choices (re-frame/subscribe [:valid-options option])]
+    [re-com/v-box
+     :children [(str @option-value @option-choices)]]))
+
 (defn card [n]
   (let [translation (re-frame/subscribe [:translation-choice n])]
     [re-com/button
@@ -25,7 +31,10 @@
         num-choices (re-frame/subscribe [:num-choices])]
     [re-com/v-box
      :class "fc-full-card"
-     :children [[:div {:class "subject-word"} @word]
+     :children [[option-chooser :direction]
+                [option-chooser :show-choices]
+                [option-chooser :num-choices]
+                [:div {:class "subject-word"} @word]
                 [re-com/v-box
                  :class "target-words"
                  :children (let [width (if (<= @num-choices 4) 2 3)

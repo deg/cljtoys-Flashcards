@@ -33,6 +33,16 @@
    (reaction (get-in @db [:options :num-choices]))))
 
 (re-frame/register-sub
+ :option
+ (fn [db [_ option]]
+   (reaction (get-in @db [:options option]))))
+
+(re-frame/register-sub
+ :valid-options
+ (fn [db [_ option]]
+   (reaction (get-in @db [:static :valid-options option]))))
+
+(re-frame/register-sub
  :active-panel
  (fn [db _]
    (reaction (:active-panel @db))))
