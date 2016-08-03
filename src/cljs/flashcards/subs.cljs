@@ -16,6 +16,7 @@
 (simple-sub :active-panel [:active-panel])
 (simple-sub :score [:dynamic :score])
 (simple-sub :multiplier [:dynamic :multiplier])
+(simple-sub :last-answer [:dynamic :last-answer])
 
 
 (re-frame/register-sub

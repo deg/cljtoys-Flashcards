@@ -17,10 +17,11 @@
 (re-frame/register-handler
  :score-answer
  (fn [db [_ this-answer]]
-   (let [correct-answer (get-in db [:dynamic :translation])]
-     (println "ANSWER: " this-answer correct-answer))
-   (re-frame/dispatch [:choose-next-word])
-   db))
+   (let [word (get-in db [:dynamic :word])
+         correct-answer (get-in db [:dynamic :translation])
+         db (assoc-in db [:dynamic :last-answer] [word this-answer correct-answer])]
+     (re-frame/dispatch [:choose-next-word])
+     db)))
 
 (re-frame/register-handler
  :choose-next-word

@@ -13,10 +13,9 @@
 
 (defn credits []
   (let [version (re-frame/subscribe [:version])]
-    (fn []
-      [re-com/v-box
-       :children [[re-com/title :label (str " prototype v" @version) :level :level3]
-                  [re-com/title :label (str "Created by David Goldfarb and Aviva Goldfarb") :level :level3]]])))
+    [re-com/v-box
+     :children [[re-com/title :label (str " prototype v" @version) :level :level3]
+                [re-com/title :label (str "Created by David Goldfarb and Aviva Goldfarb") :level :level3]]]))
 
 (defn option-chooser [option]
   (let [option-value (re-frame/subscribe [:option option])
@@ -32,9 +31,15 @@
 
 (defn score-bar []
   (let [score (re-frame/subscribe [:score])
-        multiplier (re-frame/subscribe [:multiplier])]
+        multiplier (re-frame/subscribe [:multiplier])
+        last-answer-info (re-frame/subscribe [:last-answer])]
     [re-com/v-box
-     :children [(str "Score: [" @score " x" @multiplier "]")]]))
+     :children [(str "Score: [" @score " x" @multiplier "]")
+                (when @last-answer-info
+                  (let [[last-word last-answer last-correct] @last-answer-info]
+                    (if  (= last-answer last-correct)
+                      "You are correct!"
+                      (str "Sorry, " last-word " is [" last-correct "] not [" last-answer "]"))))]]))
 
 (defn card [n]
   (let [translation (re-frame/subscribe [:translation-choice n])]

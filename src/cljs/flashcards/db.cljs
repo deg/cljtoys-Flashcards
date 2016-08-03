@@ -14,6 +14,7 @@
              :translation-choices (mapv (partial str "?") (range 10))
              :score 0
              :multiplier 1
+             :last-answer nil
              }
    :dictionary {"من" "of"
                 "و" "and"
