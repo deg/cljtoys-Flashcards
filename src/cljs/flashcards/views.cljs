@@ -37,10 +37,10 @@
     [re-com/v-box
      :children [(str "Score: [" @score " x" @multiplier "]")
                 (when @last-answer-info
-                  (let [[last-word last-answer last-correct] @last-answer-info]
-                    (if  (= last-answer last-correct)
+                  (let [{:keys [answered-word players-answer correct-answer]} @last-answer-info]
+                    (if  (= players-answer correct-answer)
                       "You are correct!"
-                      (str "Sorry, " last-word " is [" last-correct "] not [" last-answer "]"))))]]))
+                      (str "Sorry, " answered-word " is [" correct-answer "] not [" players-answer "]"))))]]))
 
 (defn card [n]
   (let [translation (re-frame/subscribe [:translation-choice n])
