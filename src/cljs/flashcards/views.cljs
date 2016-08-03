@@ -1,6 +1,7 @@
 (ns flashcards.views
     (:require [re-frame.core :as re-frame]
-              [re-com.core :as re-com]))
+              [re-com.core :as re-com :refer-macros [handler-fn]]
+              [reagent.core :as reagent]))
 
 
 ;; home
@@ -42,14 +43,21 @@
                       (str "Sorry, " last-word " is [" last-correct "] not [" last-answer "]"))))]]))
 
 (defn card [n]
-  (let [translation (re-frame/subscribe [:translation-choice n])]
-    [re-com/button
-     :class "fc-card rc-button btn btn-default"
-     :style {:padding "1em" :margin "3px" :border-radius "12px"
-             :display "inline-block" :min-width "6em"
-             :font-size "14pt" :background-color "#F0FFFF"}
-     :on-click #(re-frame/dispatch [:score-answer @translation])
-     :label @translation]))
+  (let [translation (re-frame/subscribe [:translation-choice n])
+        hover? (reagent/atom false)]
+    (fn [n]
+      [re-com/button
+       :class "fc-card rc-button btn btn-default"
+       :style {:padding "1em" :margin "3px" :border-radius "12px"
+               :display "inline-block" :min-width "6em"
+               :font-size "14pt" :background-color "#F0FFFF"
+               ;; [TOOO] Need to handle active too, not just hover
+               :box-shadow (str (if @hover? "inset " " ") "1px 2px 1px 0px rgba(0,0,0,0.75)") }
+       :attr     {:on-mouse-over (handler-fn (reset! hover? true))
+                  :on-mouse-out  (handler-fn (reset! hover? false))}
+       :on-click #(re-frame/dispatch [:score-answer @translation])
+       :label @translation]
+      )))
 
 (defn full-card []
   (let [word (re-frame/subscribe [:word])
