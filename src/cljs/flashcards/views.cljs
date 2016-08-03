@@ -45,6 +45,9 @@
   (let [translation (re-frame/subscribe [:translation-choice n])]
     [re-com/button
      :class "fc-card rc-button btn btn-default"
+     :style {:padding "1em" :margin "3px" :border-radius "12px"
+             :display "inline-block" :min-width "6em"
+             :font-size "14pt" :background-color "#F0FFFF"}
      :on-click #(re-frame/dispatch [:score-answer @translation])
      :label @translation]))
 
