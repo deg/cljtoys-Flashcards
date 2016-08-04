@@ -26,7 +26,6 @@
      {:background-color card-active-color}]
 
     [:.subject-word
-     {:font-size "28pt"}]
-    )  )
+     {:font-size "28pt"}]))
 
 
