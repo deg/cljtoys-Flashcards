@@ -70,7 +70,7 @@
 (defn subject-word []
   (let [word (re-frame/subscribe [:word])]
     [re-com/h-box
-     :class "subject-word"
+     :class "subject-word arabic"
      :justify :center
      :min-height "1.5em"
      :children [@word]]))
