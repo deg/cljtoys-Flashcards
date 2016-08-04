@@ -20,7 +20,8 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"
-                                    "resources/public/css"]
+                                    ;; [TODO] Until I fix https://degel.fogbugz.com/f/cases/445/CSS-not-deployed
+                                    #_"resources/public/css"]
 
   :figwheel {:css-dirs ["resources/public/css"]
              :ring-handler flashcards.handler/dev-handler}

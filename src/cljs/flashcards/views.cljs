@@ -43,18 +43,10 @@
                       (str "Sorry, " answered-word " is [" correct-answer "] not [" players-answer "]"))))]]))
 
 (defn card [n]
-  (let [translation (re-frame/subscribe [:translation-choice n])
-        hover? (reagent/atom false)]
+  (let [translation (re-frame/subscribe [:translation-choice n])]
     (fn [n]
       [re-com/button
        :class "fc-card rc-button btn btn-default"
-       :style {:padding "1em" :margin "3px" :border-radius "12px"
-               :display "inline-block" :min-width "6em"
-               :font-size "14pt" :background-color "#F0FFFF"
-               ;; [TOOO] Need to handle active too, not just hover
-               :box-shadow (str (if @hover? "inset " " ") "1px 2px 1px 0px rgba(0,0,0,0.75)") }
-       :attr     {:on-mouse-over (handler-fn (reset! hover? true))
-                  :on-mouse-out  (handler-fn (reset! hover? false))}
        :on-click #(re-frame/dispatch [:score-answer @translation])
        :label @translation]
       )))
