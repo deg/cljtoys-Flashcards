@@ -1,0 +1,11 @@
+@font-face {
+  font-family: ScheherazadeW;
+  src: url(/fonts/Scheherazade-R.woff);
+}
+
+.arabic, .ara {
+  font-weight: normal;
+  font-family: ScheherazadeW;
+  font-size: 130%;
+}
+
