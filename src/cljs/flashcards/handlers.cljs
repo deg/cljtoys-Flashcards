@@ -40,7 +40,7 @@
    (let [answered-word (get-in db [:dynamic :word])
          correct-answer (get-in db [:dynamic :translation])
          old-score (get-in db [:dynamic :score])
-         new-score (+ old-score (if (= players-answer correct-answer) 10 -2))]
+         new-score (+ old-score (if (= players-answer correct-answer) 30 -10))]
      (-> db
          (assoc-in [:dynamic :last-answer]
                    {:answered-word answered-word, :players-answer players-answer, :correct-answer correct-answer})
