@@ -8,7 +8,8 @@
       card-font-size "13pt"]
   (defstyles screen
     [:.fc-card
-     {:font-size card-font-size,
+     {:color card-text-color
+      :font-size card-font-size,
       :text-align "center",
       :padding "0.4em",
       :margin ".2em",
