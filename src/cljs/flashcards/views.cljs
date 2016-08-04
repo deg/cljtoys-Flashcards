@@ -96,7 +96,7 @@
      :children [[subject-word]
                 [re-com/v-box
                  :class "target-words"
-                 :children (let [width (if (<= @num-choices 4) 2 3)
+                 :children (let [width 2 ;(if (<= @num-choices 4) 2 3)
                                  rows (partition width width nil (range @num-choices))]
                              (mapv (fn [row]
                                      [re-com/h-box

@@ -5,7 +5,7 @@
       card-text-color "#606060"
       card-background-color "#F0FFFF"
       card-active-color "#80FFFF"
-      card-font-size "13pt"]
+      card-font-size "11pt"]
   (defstyles screen
     [:.fc-card
      {:color card-text-color
@@ -15,7 +15,7 @@
       :margin ".2em",
       :border-radius ".75em",
       :display "inline-block",
-      :min-width "6em",
+      :min-width "11em",
       :transition-duration "0.3s",
       }]
     [:.fc-card:active :.fc-card:hover :.fc-card:link :.fc-card:visited
