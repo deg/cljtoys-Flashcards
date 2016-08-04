@@ -42,6 +42,14 @@
                       "You are correct!"
                       (str "Sorry, " answered-word " is [" correct-answer "] not [" players-answer "]"))))]]))
 
+(defn subject-word []
+  (let [word (re-frame/subscribe [:word])]
+    [re-com/h-box
+     :class "subject-word"
+     :justify :center
+     :min-height "1.5em"
+     :children [@word]]))
+
 (defn card [n]
   (let [translation (re-frame/subscribe [:translation-choice n])]
     (fn [n]
@@ -52,11 +60,10 @@
       )))
 
 (defn full-card []
-  (let [word (re-frame/subscribe [:word])
-        num-choices (re-frame/subscribe [:num-choices])]
+  (let [num-choices (re-frame/subscribe [:num-choices])]
     [re-com/v-box
      :class "fc-full-card"
-     :children [[:div {:class "subject-word"} @word]
+     :children [[subject-word]
                 [re-com/v-box
                  :class "target-words"
                  :children (let [width (if (<= @num-choices 4) 2 3)

@@ -22,6 +22,6 @@
     outline: none;
 }
 
-body {
-    color: red;
+.subject-word {
+    font-size: 28pt;
 }
