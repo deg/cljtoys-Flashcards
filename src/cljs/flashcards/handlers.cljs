@@ -27,6 +27,11 @@
   (-> db init-game next-turn))
 
 (re-frame/register-handler
+ :set-option
+ (fn [db [_ option value]]
+   (assoc-in db [:options option] value)))
+
+(re-frame/register-handler
  :set-active-panel
  (fn [db [_ active-panel]]
    (let [db (assoc db :active-panel active-panel)]

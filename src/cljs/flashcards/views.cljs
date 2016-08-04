@@ -21,14 +21,31 @@
      :children [[re-com/title :label (str " prototype v" @version) :level :level3]
                 [re-com/title :label (str "Created by David Goldfarb and Aviva Goldfarb") :level :level3]]]))
 
+(defn str_ [x]
+  (if (keyword? x)
+    (name x)
+    (str x)))
+
 (defn option-chooser [option]
   (let [option-value (re-frame/subscribe [:option option])
-        option-choices (re-frame/subscribe [:valid-options option])]
-    [re-com/v-box
-     :children [(str @option-value @option-choices)]]))
+        option-choices (re-frame/subscribe [:valid-options option])
+        model (reagent/atom :both)]
+    (fn [option]
+      (let [option-map (mapv (fn [choice] {:id choice :label (str_ choice)})
+                             @option-choices)]
+        [re-com/h-box
+         :justify :between
+         :gap "1em"
+         :children [(str (str_ option) ": ")
+                    [re-com/single-dropdown
+                     :choices option-map
+                     :width "200px"
+                     :model option-value
+                     :on-change #(re-frame/dispatch [:set-option option %])]]]))))
 
 (defn options []
   [re-com/v-box
+   :gap "0.6em"
    :children [[option-chooser :direction]
               [option-chooser :show-choices]
               [option-chooser :num-choices]]])
