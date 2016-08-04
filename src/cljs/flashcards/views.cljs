@@ -10,7 +10,10 @@
   (let [name (re-frame/subscribe [:name])]
     (fn []
       [re-com/v-box
-       :children [[re-com/title :label (str @name) :level :level2]]])))
+       :width "90%"
+       :children [[re-com/h-box
+                   :justify :center
+                   :children [[re-com/title :label (str @name) :level :level2]]]]])))
 
 (defn credits []
   (let [version (re-frame/subscribe [:version])]
@@ -35,12 +38,17 @@
         multiplier (re-frame/subscribe [:multiplier])
         last-answer-info (re-frame/subscribe [:last-answer])]
     [re-com/v-box
-     :children [(str "Score: [" @score " x" @multiplier "]")
-                (when @last-answer-info
-                  (let [{:keys [answered-word players-answer correct-answer]} @last-answer-info]
-                    (if  (= players-answer correct-answer)
-                      "You are correct!"
-                      (str "Sorry, " answered-word " is [" correct-answer "] not [" players-answer "]"))))]]))
+     :width "90%"
+     :children [[re-com/h-box
+                 :justify :end
+                 :children [(str "Score: [" @score " x" @multiplier "]")]]
+                (re-com/h-box
+                 :justify :center
+                 :children [(when @last-answer-info
+                              (let [{:keys [answered-word players-answer correct-answer]} @last-answer-info]
+                                (if  (= players-answer correct-answer)
+                                  "You are correct!"
+                                  (str "Sorry, " answered-word " is [" correct-answer "] not [" players-answer "]"))))])]]))
 
 (defn subject-word []
   (let [word (re-frame/subscribe [:word])]
@@ -104,6 +112,7 @@
    :align :start
    :margin "1em"
    :gap "1em"
+   :width "100%"
    :children [[title]
               [score-bar]
               [full-card]
