@@ -34,7 +34,11 @@
           (is (empty? (set/difference valid-options-set known-set))))
         (testing "has all valid options"
           (is (empty? (set/difference known-set options-set)))
-          (is (empty? (set/difference known-set valid-options-set)))))))
+          (is (empty? (set/difference known-set valid-options-set))))
+        (testing "Is option default valid"
+          (doseq [[option value] options]
+            (testing option
+              (is (some #{value} (option valid-options)))))))))
 
   (deftest check-db-dictionary
     (let [dictionary (get-in the-db [:dictionary])]

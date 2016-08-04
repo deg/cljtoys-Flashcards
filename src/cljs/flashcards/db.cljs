@@ -4,11 +4,12 @@
   {:static {:name "Flashcards"
             :version "0.0.1"
             :valid-options {:direction [:new-to-known :known-to-new :both]
-                            :show-choices [true false]
+                            :show-choices [:multiple-choice :free-text]
                             :num-choices (range 2 10)}}
    :options {:direction :both
              :num-choices 4
-             :show-choices true}
+             :show-choices :multiple-choice
+             }
    :dynamic {:word "?"
              :translation "?"
              :translation-choices (mapv (partial str "?") (range 10))
