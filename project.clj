@@ -12,7 +12,7 @@
                  [ring "1.4.0"]]
 
   :plugins [[lein-cljsbuild "1.1.3"]
-            [lein-garden "0.2.6"]]
+            [lein-garden "0.2.8"]]
 
   :min-lein-version "2.5.3"
 
@@ -21,7 +21,7 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"
                                     ;; [TODO] Until I fix https://degel.fogbugz.com/f/cases/445/CSS-not-deployed
-                                    #_"resources/public/css"]
+                                    "resources/public/css"]
 
   :figwheel {:css-dirs ["resources/public/css"]
              :ring-handler flashcards.handler/dev-handler}
@@ -77,5 +77,5 @@
 
   :aot [flashcards.server]
 
-  :prep-tasks [["cljsbuild" "once" "min"] "compile"]
+  :prep-tasks [["cljsbuild" "once" "min"] ["garden" "once"] "compile"]
   )
