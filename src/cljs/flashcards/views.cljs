@@ -78,9 +78,14 @@
 (defn card [n]
   (let [translation (re-frame/subscribe [:translation-choice n])]
     (fn [n]
-      [re-com/button
-       :class "fc-card rc-button btn btn-default"
+      [re-com/hyperlink
+       :class "fc-card unpressed"
        :on-click #(re-frame/dispatch [:score-answer @translation])
+       ;; [TODO] This pressed/unpressed nonsense is here because I couldn't get
+       ;; buttons or links to behave right otherwise on touch screens. In all
+       ;; other attempts, the button would remain highlighted after being acted upon.
+       :attr  {:on-mouse-down #(set! (.-className (.-target %)) "fc-card pressed")
+               :on-mouse-up #(set! (.-className (.-target %)) "fc-card unpressed")}
        :label @translation]
       )))
 
