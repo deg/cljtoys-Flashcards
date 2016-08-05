@@ -67,7 +67,8 @@
 (re-frame/register-handler
  :score-answer
  (fn [db [_ players-answer]]
-   (let [answered-word (get-in db [:dynamic :word])
+   (let [players-answer (clojure.string/trim players-answer)
+         answered-word (get-in db [:dynamic :word])
          correct-answer (get-in db [:dynamic :translation])
          old-score (get-in db [:dynamic :score])
          new-score (+ old-score (if (= players-answer correct-answer) 30 -10))]
