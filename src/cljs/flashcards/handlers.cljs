@@ -25,10 +25,17 @@
 (defn is-hebrew [string]
   (some is-hebrew-char (seq string)))
 
+(defn get-choices [db]
+  (let [num-choices (get-in db [:options :num-choices])
+        word-pairs (->> db :dictionary shuffle (take num-choices))
+        direction (get-in db [:options :direction])]
+    (if (or (= direction :new-to-known)
+            (and (= direction :both) (-> 2 rand-int zero?)))
+      word-pairs
+      (into [] (clojure.set/map-invert word-pairs)))))
+
 (defn next-turn [db]
-  (let [dictionary (:dictionary db)
-        num-choices (get-in db [:options :num-choices])
-        [[word trans1] & other-pairs] (take num-choices (shuffle dictionary))
+  (let [[[word trans1] & other-pairs] (get-choices db)
         other-trans (map second other-pairs)
         translations (shuffle (conj other-trans trans1))]
     (-> db

@@ -20,7 +20,7 @@
       (is (re-matches #"\d+\.\d+\.\d+" version))))
 
   (deftest check-db-options
-    (let [known-options [:direction :num-choices :show-choices]
+    (let [known-options [:direction :num-choices :show-choices :interface-language]
           options (get-in the-db [:options])
           valid-options (get-in the-db [:static :valid-options])]
       (testing "has options"

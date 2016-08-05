@@ -50,7 +50,8 @@
      :children [[option-chooser :direction]
                 [option-chooser :show-choices]
                 (when (= @show-choices :multiple-choice)
-                  [option-chooser :num-choices])]]))
+                  [option-chooser :num-choices])
+                [option-chooser :interface-language]]]))
 
 (defn score-bar []
   (let [score (re-frame/subscribe [:score])
