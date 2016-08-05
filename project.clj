@@ -7,6 +7,11 @@
                  [re-com "0.8.3"]
                  [secretary "1.2.3"]
                  [garden "1.3.2"]
+
+                 ;; Needed, per https://github.com/Day8/re-frame-template/issues/32 and
+                 ;; https://github.com/Day8/re-frame-template/commit/8442988d089587ac96101d7ae82626a10b03b5c5
+                 [ns-tracker "0.3.0"]
+
                  [compojure "1.5.0"]
                  [yogthos/config "0.8"]
                  [ring "1.4.0"]]
