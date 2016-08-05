@@ -13,6 +13,7 @@
 (simple-sub :word [:dynamic :word])
 (simple-sub :translation-choices [:dynamic :translation-choices])
 (simple-sub :num-choices [:options :num-choices])
+(simple-sub :show-choices [:options :show-choices])
 (simple-sub :active-panel [:active-panel])
 (simple-sub :score [:dynamic :score])
 (simple-sub :multiplier [:dynamic :multiplier])

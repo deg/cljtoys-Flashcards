@@ -44,11 +44,13 @@
                      :on-change #(re-frame/dispatch [:set-option option %])]]]))))
 
 (defn options []
-  [re-com/v-box
-   :gap "0.6em"
-   :children [[option-chooser :direction]
-              [option-chooser :show-choices]
-              [option-chooser :num-choices]]])
+  (let [show-choices (re-frame/subscribe [:show-choices])]
+    [re-com/v-box
+     :gap "0.6em"
+     :children [[option-chooser :direction]
+                [option-chooser :show-choices]
+                (when (= @show-choices :multiple-choice)
+                  [option-chooser :num-choices])]]))
 
 (defn score-bar []
   (let [score (re-frame/subscribe [:score])
@@ -80,7 +82,7 @@
     (fn [n]
       [re-com/hyperlink
        :class "fc-card unpressed"
-       :on-click #(re-frame/dispatch [:score-answer @translation])
+       :on-click #(re-frame/dispatch [:score-answer @translation :allow-partial false])
        ;; [TODO] This pressed/unpressed nonsense is here because I couldn't get
        ;; buttons or links to behave right otherwise on touch screens. In all
        ;; other attempts, the button would remain highlighted after being acted upon.
@@ -89,18 +91,26 @@
        :label @translation]
       )))
 
-(defn full-card []
+(defn answer-cards []
   (let [num-choices (re-frame/subscribe [:num-choices])]
+    [re-com/v-box
+     :class "target-words"
+     :children (let [width 2 ;(if (<= @num-choices 4) 2 3)
+                     rows (partition width width nil (range @num-choices))]
+                 (mapv (fn [row]
+                         [re-com/h-box
+                          :children (mapv (fn [n] [card n]) row)]) rows))]))
+
+(defn full-card []
+  (let [show-choices (re-frame/subscribe [:show-choices])]
     [re-com/v-box
      :class "fc-full-card"
      :children [[subject-word]
-                [re-com/v-box
-                 :class "target-words"
-                 :children (let [width 2 ;(if (<= @num-choices 4) 2 3)
-                                 rows (partition width width nil (range @num-choices))]
-                             (mapv (fn [row]
-                                     [re-com/h-box
-                                      :children (mapv (fn [n] [card n]) row)]) rows))]]]))
+                (if (= @show-choices :multiple-choice)
+                  [answer-cards]
+                  [re-com/input-text
+                   :model ""
+                   :on-change #(re-frame/dispatch [:score-answer % :allow-partial true])])]]))
 
 (defn link-to-about-page []
   [re-com/hyperlink-href

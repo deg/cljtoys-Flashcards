@@ -5,8 +5,8 @@
             :version "0.0.1"
             :valid-options {:direction [:new-to-known :known-to-new :both]
                             :show-choices [:multiple-choice :free-text]
-                            :num-choices (range 2 10)}}
-   :options {:direction :both
+                            :num-choices (range 2 13)}}
+   :options {:direction :new-to-known
              :num-choices 4
              :show-choices :multiple-choice
              }
