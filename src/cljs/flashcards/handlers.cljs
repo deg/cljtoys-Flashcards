@@ -72,8 +72,19 @@
    (let [players-answer (clojure.string/trim players-answer)
          answered-word (get-in db [:turn :word])
          correct-answer (get-in db [:turn :translation])
-         old-score (get-in db [:dynamic :score])
-         new-score (+ old-score (if (= players-answer correct-answer) 30 -10))]
+         base-wrong -10
+         base-right 10
+         direction-multiplier (case (get-in db [:options :direction])
+                                :new-to-known 1.0
+                                :known-to-new 1.6
+                                :both 2.0)
+         num-choices (get-in db [:options :num-choices])
+         choices-multiplier (if (< num-choices 5) 1.0 (- num-choices 3.5))
+         free-text? (= :free-text (get-in db [:options :show-choices]))
+         points (if (= players-answer correct-answer)
+                  (if free-text? 100 (* base-right direction-multiplier choices-multiplier))
+                  (if free-text? -10 (/ base-wrong direction-multiplier)))
+         new-score (+ (int points) (get-in db [:dynamic :score]))]
      (-> db
          (assoc-in [:turn :last-answer]
                    {:answered-word answered-word, :players-answer players-answer, :correct-answer correct-answer})
