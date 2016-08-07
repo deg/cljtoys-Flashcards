@@ -27,8 +27,7 @@
    (let [players-answer (clojure.string/trim players-answer)
          answered-word (get-in db [:turn :word])
          correct-answer (get-in db [:turn :translation])
-         points (turn-points :answered-word answered-word
-                             :players-answer players-answer
+         points (turn-points :players-answer players-answer
                              :correct-answer correct-answer
                              :options (:options db))
          new-score (+ (int points) (get-in db [:dynamic :score]))]
