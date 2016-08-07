@@ -6,7 +6,7 @@
               [flashcards.play-view :as play-view]))
 
 
-;; play
+;; home
 
 (defn title []
   (let [name (re-frame/subscribe [:name])]
@@ -15,13 +15,12 @@
        :width "90%"
        :children [[re-com/h-box
                    :justify :center
-                   :children [[re-com/title :label (str @name) :level :level2]]]]])))
+                   :children [[re-com/title :label (str @name) :level :level1]]]]])))
 
 (defn credits []
   (let [version (re-frame/subscribe [:version])]
     [re-com/v-box
-     :children [[re-com/title :label (str " prototype v" @version) :level :level3]
-                [re-com/title :label (str "Created by David Goldfarb and Aviva Goldfarb") :level :level3]]]))
+     :children [[re-com/title :label (str " prototype v" @version) :level :level3]]]))
 
 (defn str_ [x]
   (if (keyword? x)
@@ -51,7 +50,8 @@
     (fn []
       [re-com/v-box
        :gap "0.6em"
-       :children [[option-chooser :direction false]
+       :children [[re-com/title :label "Options" :level :level2]
+                  [option-chooser :direction false]
                   [option-chooser :show-choices false]
                   [option-chooser :num-choices (= @show-choices :free-text)]
                   [option-chooser :interface-language]]])))
@@ -59,29 +59,25 @@
 
 (defn link-to-about-page []
   [re-com/hyperlink-href
-   :label "(About)"
+   :label "About Flashcards"
    :href "#/about"])
 
 (defn link-to-play-page []
-  [re-com/hyperlink-href
-   :label "Start game"
-   :href "#/play"])
+  [re-com/hyperlink-href :label "Start game now" :href "#/play"])
 
 (defn link-to-home-page []
-  [re-com/hyperlink-href
-   :label "go to Home Page"
-   :href "#/"])
+  [re-com/hyperlink-href :label "go to Home Page" :href "#/"])
 
 (defn home-panel []
   [re-com/v-box
    :align :start
-   :margin "1em"
+   :margin "1rem"
    :gap "1em"
-   :children [[title]
-              [credits]
-              [options]
-              [link-to-play-page]
-              [link-to-about-page]]])
+   :children [[options]
+              [re-com/h-box
+               :gap "3rem"
+               :children [[link-to-play-page]
+                          [link-to-about-page]]]]])
 
 
 (defn play-panel []
@@ -90,8 +86,7 @@
    :margin "1em"
    :gap "1em"
    :width "100%"
-   :children [[title]
-              [play-view/score-bar]
+   :children [[play-view/score-bar]
               [play-view/full-card]
               [link-to-home-page]
               [link-to-about-page]]])
@@ -99,16 +94,19 @@
 
 ;; about
 
-(defn about-title []
-  [re-com/title
-   :label "This is the About Page."
-   :level :level1])
+(defn paragraph [text]
+  [re-com/h-box
+   :width "90%"
+   :padding "1rem"
+   :children [text]]
+  )
 
 (defn about-panel []
   [re-com/v-box
    :gap "1em"
-   :children [[about-title]
-              [link-to-home-page]]])
+   :children [[paragraph [credits]]
+              [paragraph "This Flashcards game was designed by Aviva Goldfarb and David Goldfarb, during the summer of 2016."]
+              [paragraph [link-to-home-page]]]])
 
 
 ;; main
@@ -119,13 +117,10 @@
 (defmethod panels :about-panel [] [about-panel])
 (defmethod panels :default [] [:div])
 
-(defn show-panel
-  [panel-name]
-  [panels panel-name])
-
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
       [re-com/v-box
        :height "100%"
-       :children [[panels @active-panel]]])))
+       :children [[title]
+                  [panels @active-panel]]])))
