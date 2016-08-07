@@ -9,21 +9,21 @@
 
 ;;(def arabic-chars (map char (concat (range 0x0600 0x06FF) (range 0x0750 0x077F) (range 0x08A0 0x08FF)))))
 
-(defn is-arabic-char [char]
+(defn arabic-char? [char]
   (let [char-code (.charCodeAt char 0)]
     (or (and (<= 0x0600 char-code) (<= char-code 0x06FF))
         (and (<= 0x0750 char-code) (<= char-code 0x077F))
         (and (<= 0x08a0 char-code) (<= char-code 0x08FF)))))
 
-(defn is-hebrew-char [char]
+(defn hebrew-char? [char]
   (let [char-code (.charCodeAt char 0)]
     (and (<= 0x00590 char-code) (<= char-code 0x05FF))))
 
-(defn is-arabic [string]
-  (some is-arabic-char (seq string)))
+(defn arabic? [string]
+  (some arabic-char? (seq string)))
 
-(defn is-hebrew [string]
-  (some is-hebrew-char (seq string)))
+(defn hebrew? [string]
+  (some hebrew-char? (seq string)))
 
 (defn get-choices [db]
   (let [num-choices (get-in db [:options :num-choices])

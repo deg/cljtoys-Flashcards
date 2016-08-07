@@ -2,7 +2,7 @@
     (:require [re-frame.core :as re-frame]
               [re-com.core :as re-com :refer-macros [handler-fn]]
               [reagent.core :as reagent]
-              [flashcards.handlers :refer [is-arabic is-hebrew]]))
+              [flashcards.handlers :refer [arabic? hebrew?]]))
 
 
 ;; home
@@ -74,7 +74,7 @@
 (defn subject-word []
   (let [word (re-frame/subscribe [:word])]
     [re-com/h-box
-     :class (str "subject-word" (when (is-arabic @word)" arabic" ))
+     :class (str "subject-word" (when (arabic? @word)" arabic" ))
      :justify :center
      :min-height "1.5em"
      :children [@word]]))
@@ -83,7 +83,7 @@
   (let [translation (re-frame/subscribe [:translation-choice n])]
     (fn [n]
       ;; [TODO] This could be MUCH more concise if I knew how to add/remove a single class
-      (let [base-class (str (when (is-arabic @translation) "arabic ") "fc-card")
+      (let [base-class (str (when (arabic? @translation) "arabic ") "fc-card")
             pressed-class (str "pressed " base-class)
             unpressed-class (str "unpressed " base-class)]
         [re-com/hyperlink
