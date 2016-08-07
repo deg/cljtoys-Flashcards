@@ -28,11 +28,11 @@
     (name x)
     (str x)))
 
-(defn option-chooser [option]
+(defn option-chooser [option disabled?]
   (let [option-value (re-frame/subscribe [:option option])
         option-choices (re-frame/subscribe [:valid-options option])
         model (reagent/atom :both)]
-    (fn [option]
+    (fn [option disabled?]
       (let [option-map (mapv (fn [choice] {:id choice :label (str_ choice)})
                              @option-choices)]
         [re-com/h-box
@@ -41,19 +41,20 @@
          :children [(str (str_ option) ": ")
                     [re-com/single-dropdown
                      :choices option-map
+                     :disabled? disabled?
                      :width "200px"
                      :model option-value
                      :on-change #(re-frame/dispatch [:set-option option %])]]]))))
 
 (defn options []
   (let [show-choices (re-frame/subscribe [:show-choices])]
-    [re-com/v-box
-     :gap "0.6em"
-     :children [[option-chooser :direction]
-                [option-chooser :show-choices]
-                (when (= @show-choices :multiple-choice)
-                  [option-chooser :num-choices])
-                [option-chooser :interface-language]]]))
+    (fn []
+      [re-com/v-box
+       :gap "0.6em"
+       :children [[option-chooser :direction false]
+                  [option-chooser :show-choices false]
+                  [option-chooser :num-choices (= @show-choices :free-text)]
+                  [option-chooser :interface-language]]])))
 
 
 (defn link-to-about-page []
