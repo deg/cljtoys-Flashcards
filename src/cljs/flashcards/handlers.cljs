@@ -39,9 +39,11 @@
         other-trans (map second other-pairs)
         translations (shuffle (conj other-trans trans1))]
     (-> db
-        (assoc-in [:dynamic :word] word)
-        (assoc-in [:dynamic :translation] trans1)
-        (assoc-in [:dynamic :translation-choices] translations))))
+        (assoc-in [:turn] {:word word
+                           :translation trans1
+                           :translation-choices translations
+                           :last-answer (get-in db [:turn :last-answer])
+                           :text ""}))))
 
 (defn init-game [db]
   (-> db
@@ -68,12 +70,12 @@
  :score-answer
  (fn [db [_ players-answer]]
    (let [players-answer (clojure.string/trim players-answer)
-         answered-word (get-in db [:dynamic :word])
-         correct-answer (get-in db [:dynamic :translation])
+         answered-word (get-in db [:turn :word])
+         correct-answer (get-in db [:turn :translation])
          old-score (get-in db [:dynamic :score])
          new-score (+ old-score (if (= players-answer correct-answer) 30 -10))]
      (-> db
-         (assoc-in [:dynamic :last-answer]
+         (assoc-in [:turn :last-answer]
                    {:answered-word answered-word, :players-answer players-answer, :correct-answer correct-answer})
          (assoc-in [:dynamic :score] new-score)
          next-turn))))

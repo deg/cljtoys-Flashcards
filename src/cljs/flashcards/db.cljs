@@ -12,13 +12,15 @@
              :num-choices 4
              :show-choices :multiple-choice
              }
-   :dynamic {:word "?"
-             :translation "?"
-             :translation-choices (mapv (partial str "?") (range 13))
-             :score 0
+   :dynamic {:score 0
              :multiplier 1
-             :last-answer nil
              }
+   :turn {:word "?"
+          :translation "?"
+          :translation-choices (mapv (partial str "?") (range 13))
+          :last-answer nil
+          :text ""
+          }
    :dictionary {"إتّجه" "פנה, שם פניו אל",
                 "إتّجاه" "כיוון (direction) ",
                 "إتّخذ" "נקט, קיבל (החלטה)",

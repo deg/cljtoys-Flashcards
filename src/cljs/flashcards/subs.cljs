@@ -10,20 +10,21 @@
 
 (simple-sub :name [:static :name])
 (simple-sub :version [:static :version])
-(simple-sub :word [:dynamic :word])
-(simple-sub :translation-choices [:dynamic :translation-choices])
+(simple-sub :word [:turn :word])
+(simple-sub :translation-choices [:turn :translation-choices])
 (simple-sub :num-choices [:options :num-choices])
 (simple-sub :show-choices [:options :show-choices])
 (simple-sub :active-panel [:active-panel])
 (simple-sub :score [:dynamic :score])
 (simple-sub :multiplier [:dynamic :multiplier])
-(simple-sub :last-answer [:dynamic :last-answer])
+(simple-sub :last-answer [:turn :last-answer])
+(simple-sub :text [:turn :text])
 
 
 (re-frame/register-sub
  :translation-choice
  (fn [db [_ n]]
-   (-> @db (get-in [:dynamic :translation-choices n]) reaction)))
+   (-> @db (get-in [:turn :translation-choices n]) reaction)))
 
 (re-frame/register-sub
  :option

@@ -103,15 +103,18 @@
                           :children (mapv (fn [n] [card n]) row)]) rows))]))
 
 (defn full-card []
-  (let [show-choices (re-frame/subscribe [:show-choices])]
+  (let [show-choices (re-frame/subscribe [:show-choices])
+        text (re-frame/subscribe [:text])]
     [re-com/v-box
      :class "fc-full-card"
      :children [[subject-word]
                 (if (= @show-choices :multiple-choice)
                   [answer-cards]
                   [re-com/input-text
-                   :model ""
-                   :on-change #(re-frame/dispatch [:score-answer % :allow-partial true])])]]))
+                   :model text
+                   :on-change #(do
+                                 (reset! text %)
+                                 (re-frame/dispatch [:score-answer % :allow-partial true]))])]]))
 
 (defn link-to-about-page []
   [re-com/hyperlink-href
