@@ -1,7 +1,8 @@
 (ns flashcards.views
     (:require [re-frame.core :as re-frame]
               [re-com.core :as re-com :refer-macros [handler-fn]]
-              [reagent.core :as reagent]))
+              [reagent.core :as reagent]
+              [flashcards.handlers :refer [is-arabic is-hebrew]]))
 
 
 ;; home
@@ -73,7 +74,7 @@
 (defn subject-word []
   (let [word (re-frame/subscribe [:word])]
     [re-com/h-box
-     :class "subject-word arabic"
+     :class (str "subject-word" (when (is-arabic @word)" arabic" ))
      :justify :center
      :min-height "1.5em"
      :children [@word]]))
@@ -81,16 +82,19 @@
 (defn card [n]
   (let [translation (re-frame/subscribe [:translation-choice n])]
     (fn [n]
-      [re-com/hyperlink
-       :class "fc-card unpressed"
-       :on-click #(re-frame/dispatch [:score-answer @translation :allow-partial false])
-       ;; [TODO] This pressed/unpressed nonsense is here because I couldn't get
-       ;; buttons or links to behave right otherwise on touch screens. In all
-       ;; other attempts, the button would remain highlighted after being acted upon.
-       :attr  {:on-mouse-down #(set! (.-className (.-target %)) "fc-card pressed")
-               :on-mouse-up #(set! (.-className (.-target %)) "fc-card unpressed")}
-       :label @translation]
-      )))
+      ;; [TODO] This could be MUCH more concise if I knew how to add/remove a single class
+      (let [base-class (str (when (is-arabic @translation) "arabic ") "fc-card")
+            pressed-class (str "pressed " base-class)
+            unpressed-class (str "unpressed " base-class)]
+        [re-com/hyperlink
+         :class unpressed-class
+         :on-click #(re-frame/dispatch [:score-answer @translation :allow-partial false])
+         ;; [TODO] This pressed/unpressed nonsense is here because I couldn't get
+         ;; buttons or links to behave right otherwise on touch screens. In all
+         ;; other attempts, the button would remain highlighted after being acted upon.
+         :attr  {:on-mouse-down #(set! (.-className (.-target %)) pressed-class)
+                 :on-mouse-up #(set! (.-className (.-target %)) unpressed-class)}
+         :label @translation]))))
 
 (defn answer-cards []
   (let [num-choices (re-frame/subscribe [:num-choices])]
