@@ -43,4 +43,10 @@
      {:font-size (fpct subject-font-size)}]
     [:.subject-word.arabic
      {:font-size (fpct (* subject-font-size arabic-multiplier))}]
+
+    ;; Try to force Google ad to bottom of screen
+    [:iframe :ins
+     {:position "absolute"
+      :bottom 0}]
+
     ))
