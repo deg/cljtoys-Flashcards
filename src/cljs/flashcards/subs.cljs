@@ -19,6 +19,7 @@
 (simple-sub :multiplier [:dynamic :multiplier])
 (simple-sub :prev-turn [:turn :prev-turn])
 (simple-sub :text [:turn :text])
+(simple-sub :ui-language [:options :ui-language])
 
 
 (re-frame/register-sub

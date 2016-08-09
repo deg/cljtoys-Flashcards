@@ -2,6 +2,7 @@
     (:require [re-frame.core :as re-frame]
               [re-com.core :as re-com :refer-macros [handler-fn]]
               [reagent.core :as reagent]
+              [flashcards.string-table :refer [lstr]]
               [flashcards.utils :refer [arabic? hebrew?]]
               [flashcards.play-view :as play-view]))
 
@@ -9,35 +10,33 @@
 ;; home
 
 (defn title []
-  (let [name (re-frame/subscribe [:name])]
+  (let [ui (re-frame/subscribe [:ui-language])
+        name(re-frame/subscribe [:name])]
     (fn []
       [re-com/v-box
        :width "90%"
        :children [[re-com/h-box
                    :justify :center
-                   :children [[re-com/title :label (str @name) :level :level1]]]]])))
+                   :children [[re-com/title :label (lstr @ui @name) :level :level1]]]]])))
 
 (defn credits []
-  (let [version (re-frame/subscribe [:version])]
+  (let [ui (re-frame/subscribe [:ui-language])
+        version (re-frame/subscribe [:version])]
     [re-com/v-box
-     :children [[re-com/title :label (str " prototype v" @version) :level :level3]]]))
-
-(defn str_ [x]
-  (if (keyword? x)
-    (name x)
-    (str x)))
+     :children [[re-com/title :label (str (lstr @ui :prototype) " v" @version) :level :level3]]]))
 
 (defn option-chooser [option disabled?]
-  (let [option-value (re-frame/subscribe [:option option])
+  (let [ui (re-frame/subscribe [:ui-language])
+        option-value (re-frame/subscribe [:option option])
         option-choices (re-frame/subscribe [:valid-options option])
         model (reagent/atom :both)]
     (fn [option disabled?]
-      (let [option-map (mapv (fn [choice] {:id choice :label (str_ choice)})
+      (let [option-map (mapv (fn [choice] {:id choice :label (if (keyword? choice) (lstr @ui choice) choice)})
                              @option-choices)]
         [re-com/h-box
          :justify :between
          :gap "1em"
-         :children [(str (str_ option) ": ")
+         :children [(str (lstr @ui option) ": ")
                     [re-com/single-dropdown
                      :choices option-map
                      :disabled? disabled?
@@ -46,27 +45,32 @@
                      :on-change #(re-frame/dispatch [:set-option option %])]]]))))
 
 (defn options []
-  (let [show-choices (re-frame/subscribe [:show-choices])]
+  (let [ui (re-frame/subscribe [:ui-language])
+        show-choices (re-frame/subscribe [:show-choices])]
     (fn []
       [re-com/v-box
        :gap "0.6em"
-       :children [[re-com/title :label "Options" :level :level2]
+       :children [[re-com/title :label (lstr @ui :options) :level :level2]
                   [option-chooser :direction false]
                   [option-chooser :show-choices false]
                   [option-chooser :num-choices (= @show-choices :free-text)]
-                  [option-chooser :interface-language]]])))
+                  [option-chooser :ui-language]]])))
 
 
 (defn link-to-about-page []
-  [re-com/hyperlink-href
-   :label "About Flashcards"
-   :href "#/about"])
+  (let [ui (re-frame/subscribe [:ui-language])
+        name (re-frame/subscribe [:name])]
+    [re-com/hyperlink-href
+     :label (str (lstr @ui :about) " " (lstr @ui @name))
+     :href "#/about"]))
 
 (defn link-to-play-page []
-  [re-com/hyperlink-href :label "Start game now" :href "#/play"])
+  (let [ui (re-frame/subscribe [:ui-language])]
+    [re-com/hyperlink-href :label (lstr @ui :start-game) :href "#/play"]))
 
 (defn link-to-home-page []
-  [re-com/hyperlink-href :label "go to Home Page" :href "#/"])
+  (let [ui (re-frame/subscribe [:ui-language])]
+    [re-com/hyperlink-href :label (lstr @ui :go-to-homepage) :href "#/"]))
 
 (defn home-panel []
   [re-com/v-box

@@ -1,13 +1,13 @@
 (ns flashcards.db)
 
 (def default-db
-  {:static {:name "Flashcards"
+  {:static {:name :flashcards
             :version "0.0.1"
             :valid-options {:direction [:new-to-known :known-to-new :both]
                             :show-choices [:multiple-choice :free-text]
                             :num-choices (range 2 13)
-                            :interface-language [:english]}}
-   :options {:interface-language :english
+                            :ui-language [:english :hebrew]}}
+   :options {:ui-language :english
              :direction :new-to-known
              :num-choices 4
              :show-choices :multiple-choice

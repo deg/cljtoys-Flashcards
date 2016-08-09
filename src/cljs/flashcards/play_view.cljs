@@ -2,17 +2,19 @@
     (:require [re-frame.core :as re-frame]
               [re-com.core :as re-com :refer-macros [handler-fn]]
               [reagent.core :as reagent]
+              [flashcards.string-table :refer [lstr]]
               [flashcards.utils :refer [arabic? hebrew?]]))
 
 (defn score-bar []
-  (let [score (re-frame/subscribe [:score])
+  (let [ui (re-frame/subscribe [:ui-language])
+        score (re-frame/subscribe [:score])
         multiplier (re-frame/subscribe [:multiplier])
         prev-turn (re-frame/subscribe [:prev-turn])]
     [re-com/v-box
      :width "90%"
      :children [[re-com/h-box
                  :justify :end
-                 :children [(str "Score: [" @score " x" @multiplier "]")]]
+                 :children [(str (lstr @ui :score) ": [" @score " x" @multiplier "]")]]
                 (re-com/h-box
                  :justify :center
                  :children [(when @prev-turn
