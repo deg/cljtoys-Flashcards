@@ -2,7 +2,9 @@
 
 (def string-table
   {:about           {:english "About"              :hebrew "אודות"}
+   :and-not         {:english "and not"            :hebrew "ולא"}
    :both            {:english "Both"               :hebrew "שתיהם"}
+   :correct-answer-is  {:english "Correct answer"  :hebrew "תשובה נכונה היא"}
    :direction       {:english "direction"          :hebrew "כיוון"}
    :english         {:english "English"            :hebrew "אנגלית"}
    :flashcards      {:english "Flashcards"         :hebrew "כרטיסיות"}
@@ -18,7 +20,11 @@
    :prototype       {:english "Prototype"          :hebrew "אב טיפוס"}
    :show-choices    {:english "Show choices"       :hebrew "אפשרויות"}
    :start-game      {:english "Start game"         :hebrew "התחל משחק"}
-   :ui-language     {:english "Interface language" :hebrew "שפת תצוגה"}})
+   :ui-language     {:english "Interface language" :hebrew "שפת תצוגה"}
+   :x-for           {:english "For"                :hebrew "בשביל"}
+   :x-correct-answer-is  {:english " the correct answer is "  :hebrew " תשובה נכונה היא "}
+   :x-and-not         {:english "and not"            :hebrew "ולא"}
+   })
 		
 
 

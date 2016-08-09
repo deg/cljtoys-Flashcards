@@ -21,7 +21,19 @@
                               (let [{:keys [answered-word players-answer correct-answer]} @prev-turn]
                                 (if  (= players-answer correct-answer)
                                   "You are correct!"
-                                  (str "Sorry, " answered-word " is [" correct-answer "] not [" players-answer "]"))))])]]))
+                                  (str (lstr @ui :x-for)
+                                       " \""
+                                       answered-word
+                                       "\""
+                                       (lstr @ui :x-correct-answer-is)
+                                       "\""
+                                       correct-answer
+                                       "\" "
+                                       (lstr @ui :x-and-not)
+                                       " \""
+                                       players-answer
+                                       "\"."
+                                       ))))])]]))
 
 (defn subject-word []
   (let [word (re-frame/subscribe [:word])]
