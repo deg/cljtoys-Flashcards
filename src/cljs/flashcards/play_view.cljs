@@ -7,7 +7,7 @@
 (defn score-bar []
   (let [score (re-frame/subscribe [:score])
         multiplier (re-frame/subscribe [:multiplier])
-        last-answer-info (re-frame/subscribe [:last-answer])]
+        prev-turn (re-frame/subscribe [:prev-turn])]
     [re-com/v-box
      :width "90%"
      :children [[re-com/h-box
@@ -15,8 +15,8 @@
                  :children [(str "Score: [" @score " x" @multiplier "]")]]
                 (re-com/h-box
                  :justify :center
-                 :children [(when @last-answer-info
-                              (let [{:keys [answered-word players-answer correct-answer]} @last-answer-info]
+                 :children [(when @prev-turn
+                              (let [{:keys [answered-word players-answer correct-answer]} @prev-turn]
                                 (if  (= players-answer correct-answer)
                                   "You are correct!"
                                   (str "Sorry, " answered-word " is [" correct-answer "] not [" players-answer "]"))))])]]))

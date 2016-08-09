@@ -15,12 +15,7 @@
    :dynamic {:score 0
              :multiplier 1
              }
-   :turn {:word "?"
-          :translation "?"
-          :translation-choices (mapv (partial str "?") (range 13))
-          :last-answer nil
-          :text ""
-          }
+   :turn {}
    :dictionary {"إتّجه" "פנה, שם פניו אל",
                 "إتّجاه" "כיוון (direction) ",
                 "إتّخذ" "נקט, קיבל (החלטה)",

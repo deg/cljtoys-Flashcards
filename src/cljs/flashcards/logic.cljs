@@ -20,12 +20,12 @@
   (let [[[word trans1] & other-pairs] (get-choices db)
         other-trans (map second other-pairs)
         translations (shuffle (conj other-trans trans1))]
-    (-> db
-        (assoc-in [:turn] {:word word
-                           :translation trans1
-                           :translation-choices translations
-                           :last-answer (get-in db [:turn :last-answer])
-                           :text ""}))))
+    (assoc db :turn
+           (merge (:turn db)
+                  {:word word
+                   :translation trans1
+                   :translation-choices translations
+                   :text ""}))))
 
 (defn first-turn [db]
   (-> db init-game next-turn))
@@ -42,6 +42,18 @@
                                :both 2.0)]
     (if (= players-answer correct-answer)
       (if free-text? 100 (* base-right direction-multiplier choices-multiplier))
-      (if free-text? -10 (/ base-wrong direction-multiplier)))
-    ))
+      (if free-text? -10 (/ base-wrong direction-multiplier)))))
+
+(defn update-turn [db players-answer]
+  (let [answered-word (get-in db [:turn :word])
+        correct-answer (get-in db [:turn :translation])
+        points (turn-points :players-answer players-answer
+                            :correct-answer correct-answer
+                            :options (:options db))
+        new-score (+ (int points) (get-in db [:dynamic :score]))]
+    (-> db
+        (assoc-in [:turn :prev-turn]
+                  {:answered-word answered-word, :players-answer players-answer, :correct-answer correct-answer})
+        (assoc-in [:dynamic :score] new-score)
+        next-turn)))
 

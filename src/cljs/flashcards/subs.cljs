@@ -17,7 +17,7 @@
 (simple-sub :active-panel [:active-panel])
 (simple-sub :score [:dynamic :score])
 (simple-sub :multiplier [:dynamic :multiplier])
-(simple-sub :last-answer [:turn :last-answer])
+(simple-sub :prev-turn [:turn :prev-turn])
 (simple-sub :text [:turn :text])
 
 

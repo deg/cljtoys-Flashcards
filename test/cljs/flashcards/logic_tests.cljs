@@ -64,5 +64,32 @@
                       (checker expected (update these-options :num-choices inc)))))
             (testing "More penalty for wrong when more choices"
               (is (>= (checker wrong these-options)
-                     (checker wrong (update these-options :num-choices inc))))))))))
+                      (checker wrong (update these-options :num-choices inc))))))))))
+
+
+  (deftest update
+    (let [db-before (logic/first-turn the-db)
+          expected (get-in db-before [:turn :translation])
+          wrong (some #(when (not= % expected) %) (get-in db-before [:turn :translation-choices]))]
+      (testing "pre-conditions"
+        (is (not= expected wrong)))
+      (let [old-turn (:turn db-before)]
+        (testing "right answer"
+        (let [db-after (logic/update-turn db-before expected)new-prev-turn
+               (get-in db-after [:turn :prev-turn])]
+          (is (> (get-in db-after [:dynamic :score])
+                 (get-in db-before [:dynamic :score])))
+          (is (= (:answered-word new-prev-turn) (:word old-turn)))
+          (is (= (:correct-answer new-prev-turn) expected))
+          (is (= (:players-answer new-prev-turn) expected))
+          ))
+      (testing "wrong answer"
+        (let [db-after (logic/update-turn db-before wrong)
+              new-prev-turn (get-in db-after [:turn :prev-turn])]
+          (is (< (get-in db-after [:dynamic :score])
+                 (get-in db-before [:dynamic :score])))
+          (is (= (:answered-word new-prev-turn) (:word old-turn)))
+          (is (= (:correct-answer new-prev-turn) expected))
+          (is (= (:players-answer new-prev-turn) wrong)))))))
+
   )
