@@ -11,7 +11,8 @@
     (testing "initialize db"
       (let [initialized (logic/init-game the-db)]
         (is (= (get-in initialized [:dynamic :score]) 0))
-        (is (= (get-in initialized [:dynamic :multiplier]) 1)))))
+        (is (= (get-in initialized [:dynamic :multiplier]) 1))
+        (is (= (get-in initialized [:turn]) nil)))))
 
   (deftest first-turn
     (let [db (logic/first-turn the-db)
@@ -24,7 +25,9 @@
       (testing "Translation in dictionary"
         (is (some #{translation} (map second dictionary))))
       (testing "Translation in other language"
-        (not (= (utils/arabic? word) (utils/arabic? translation))))
+        (is (not= (utils/arabic? word) (utils/arabic? translation))))
+      (testing "No prev-turn state at start of game"
+        (is (not (:prev-turn turn))))
       (testing "Translation matches word"
         (is translation (get (into {} dictionary) word)))
       (testing "Other (wrong) answers"
@@ -41,6 +44,12 @@
             (is (= (count (distinct answers)) (:num-choices options))))
           (testing "Includes correct answer"
             (is (some #{translation} answers)))))))
+
+  (deftest second-game
+    (let [db (-> the-db logic/first-turn logic/update-turn logic/first-turn)
+          turn (:turn db)]
+      (testing "No prev-turn state at start of game"
+        (is (not (:prev-turn turn))))))
 
   (deftest scores
     (let [expected "GOOD"

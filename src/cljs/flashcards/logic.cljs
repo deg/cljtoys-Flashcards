@@ -3,7 +3,8 @@
 (defn init-game [db]
   (-> db
       (assoc-in [:dynamic :score] 0)
-      (assoc-in [:dynamic :multiplier] 1)))
+      (assoc-in [:dynamic :multiplier] 1)
+      (assoc-in [:turn] nil)))
 
 (defn get-choices [db]
   (let [num-choices (get-in db [:options :num-choices])
