@@ -122,9 +122,11 @@
 (defmethod panels :default [] [:div])
 
 (defn main-panel []
-  (let [active-panel (re-frame/subscribe [:active-panel])]
+  (let [ui (re-frame/subscribe [:ui-language])
+        active-panel (re-frame/subscribe [:active-panel])]
     (fn []
       [re-com/v-box
+       :attr {:dir (if (= @ui :english) "ltr" "rtl")}
        :height "100%"
        :children [[title]
                   [panels @active-panel]]])))
