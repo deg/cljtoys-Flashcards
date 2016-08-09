@@ -9,6 +9,9 @@
                  [secretary "1.2.3"]
                  [garden "1.3.2"]
 
+                 ;; Atom interface to local storage
+                 [alandipert/storage-atom "2.0.1"]
+
                  ;; Needed, per https://github.com/Day8/re-frame-template/issues/32 and
                  ;; https://github.com/Day8/re-frame-template/commit/8442988d089587ac96101d7ae82626a10b03b5c5
                  [ns-tracker "0.3.0"]
