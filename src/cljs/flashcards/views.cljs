@@ -92,8 +92,10 @@
    :width "100%"
    :children [[play-view/score-bar]
               [play-view/full-card]
-              [link-to-home-page]
-              [link-to-about-page]]])
+              [re-com/h-box
+               :gap "3rem"
+               :children [[link-to-home-page]
+                          [link-to-about-page]]]]])
 
 
 ;; about
