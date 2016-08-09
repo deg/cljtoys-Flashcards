@@ -1,6 +1,6 @@
 (ns flashcards.logic (:require))
 
-(defn init-game [db]
+(defn- init-game [db]
   (-> db
       (assoc-in [:dynamic :score] 0)
       (assoc-in [:dynamic :multiplier] 1)
@@ -17,7 +17,7 @@
 
 
 
-(defn next-turn [db]
+(defn- setup-turn [db]
   (let [[[word trans1] & other-pairs] (get-choices db)
         other-trans (map second other-pairs)
         translations (shuffle (conj other-trans trans1))]
@@ -29,7 +29,7 @@
                    :text ""}))))
 
 (defn first-turn [db]
-  (-> db init-game next-turn))
+  (-> db init-game setup-turn))
 
 (defn turn-points [& {:keys [players-answer correct-answer options]}]
   (let [base-wrong -10
@@ -56,5 +56,5 @@
         (assoc-in [:turn :prev-turn]
                   {:answered-word answered-word, :players-answer players-answer, :correct-answer correct-answer})
         (assoc-in [:dynamic :score] new-score)
-        next-turn)))
+        setup-turn)))
 
