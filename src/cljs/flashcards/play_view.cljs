@@ -1,9 +1,10 @@
 (ns flashcards.play-view
-    (:require [re-frame.core :as re-frame]
-              [re-com.core :as re-com :refer-macros [handler-fn]]
-              [reagent.core :as reagent]
-              [flashcards.string-table :refer [lstr]]
-              [flashcards.utils :refer [arabic? hebrew?]]))
+  (:require-macros [clojure.core.strint :as strint])
+  (:require [re-frame.core :as re-frame]
+            [re-com.core :as re-com :refer-macros [handler-fn]]
+            [reagent.core :as reagent]
+            [flashcards.string-table :refer [lstr]]
+            [flashcards.utils :refer [arabic? hebrew?]]))
 
 (defn score-bar []
   (let [ui (re-frame/subscribe [:ui-language])
@@ -20,20 +21,8 @@
                  :children [(when @prev-turn
                               (let [{:keys [answered-word players-answer correct-answer]} @prev-turn]
                                 (if  (= players-answer correct-answer)
-                                  "You are correct!"
-                                  (str (lstr @ui :x-for)
-                                       " \""
-                                       answered-word
-                                       "\""
-                                       (lstr @ui :x-correct-answer-is)
-                                       "\""
-                                       correct-answer
-                                       "\" "
-                                       (lstr @ui :x-and-not)
-                                       " \""
-                                       players-answer
-                                       "\"."
-                                       ))))])]]))
+                                  (lstr @ui :correct-score)
+                                  ((lstr @ui :incorrect-score) answered-word correct-answer players-answer))))])]]))
 
 (defn subject-word []
   (let [word (re-frame/subscribe [:word])]

@@ -1,10 +1,11 @@
-(ns flashcards.string-table)
+(ns flashcards.string-table
+  (:require-macros [clojure.core.strint :as strint]))
 
 (def string-table
   {:about           {:english "About"              :hebrew "אודות"}
    :and-not         {:english "and not"            :hebrew "ולא"}
    :both            {:english "Both"               :hebrew "שתיהם"}
-   :correct-answer-is  {:english "Correct answer"  :hebrew "תשובה נכונה היא"}
+   :correct-score   {:english "You are correct!"   :hebrew "נכון!"}
    :direction       {:english "direction"          :hebrew "כיוון"}
    :english         {:english "English"            :hebrew "אנגלית"}
    :flashcards      {:english "Flashcards"         :hebrew "כרטיסיות"}
@@ -21,9 +22,16 @@
    :show-choices    {:english "Show choices"       :hebrew "אפשרויות"}
    :start-game      {:english "Start game"         :hebrew "התחל משחק"}
    :ui-language     {:english "Interface language" :hebrew "שפת תצוגה"}
-   :x-for           {:english "For"                :hebrew "בשביל"}
-   :x-correct-answer-is  {:english " the correct answer is "  :hebrew " תשובה נכונה היא "}
-   :x-and-not         {:english "and not"            :hebrew "ולא"}
+
+   ;; Interpolated strings (still a bit kludgy)
+   :incorrect-score
+   {:english
+    (fn [answered-word correct-answer players-answer]
+      (strint/<< "For \"~{answered-word}\", the correct answer is \"~{correct-answer}\" and not \"~{players-answer}\"."))
+    :hebrew
+    (fn [answered-word correct-answer players-answer]
+      (strint/<< "בשביל \"~{answered-word}\", תשובה נכונה היא \"~{correct-answer}\" ולא \"~{players-answer}\"."))
+    }
    })
 		
 
