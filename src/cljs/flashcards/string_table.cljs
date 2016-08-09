@@ -24,7 +24,6 @@
 
 
 (defn lstr [language key]
-  (prn "Match" language key)
   (or (get-in string-table [key language])
       (str "???-" key "-???")) )
 
