@@ -30,7 +30,7 @@
       (strint/<< "For \"~{answered-word}\", the correct answer is \"~{correct-answer}\" and not \"~{players-answer}\"."))
     :hebrew
     (fn [answered-word correct-answer players-answer]
-      (strint/<< "בשביל \"~{answered-word}\", תשובה נכונה היא \"~{correct-answer}\" ולא \"~{players-answer}\"."))
+      (strint/<< "בשביל \"~{answered-word}\", התשובה הנכונה היא \"~{correct-answer}\" ולא \"~{players-answer}\"."))
     }
    })
 		
