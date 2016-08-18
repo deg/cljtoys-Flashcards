@@ -46,7 +46,10 @@
             (is (some #{translation} answers)))))))
 
   (deftest second-game
-    (let [db (-> the-db logic/first-turn logic/update-turn logic/first-turn)
+    (let [db (-> the-db
+                 logic/first-turn
+                 (#(logic/update-turn % (get-in % [:turn :translation])))
+                 logic/first-turn)
           turn (:turn db)]
       (testing "No prev-turn state at start of game"
         (is (not (:prev-turn turn))))))
@@ -76,7 +79,7 @@
                       (checker wrong (update these-options :num-choices inc))))))))))
 
 
-  (deftest update
+  (deftest update-board
     (let [db-before (logic/first-turn the-db)
           expected (get-in db-before [:turn :translation])
           wrong (some #(when (not= % expected) %) (get-in db-before [:turn :translation-choices]))]
