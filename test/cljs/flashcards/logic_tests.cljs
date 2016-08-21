@@ -1,19 +1,19 @@
 (ns flashcards.logic-test
   (:require [cljs.test :refer-macros [deftest testing is]]
-            [flashcards.db :as db]
+            [flashcards.db :refer [default-db]]
             [flashcards.utils :as utils]
             [flashcards.logic :as logic]))
 
 (deftest startup
   (testing "initialize db"
-    (let [initialized (logic/init-game db/default-db)]
+    (let [initialized (logic/init-game default-db)]
       (is (= (get-in initialized [:dynamic :score]) 0))
       (is (= (get-in initialized [:dynamic :multiplier]) 1))
       (is (= (get-in initialized [:turn]) nil)))))
 
 (deftest first-turn
-  (let [db (logic/first-turn db/default-db)
-        options (:options db/default-db)
+  (let [db (logic/first-turn default-db)
+        options (:options default-db)
         dictionary (:dictionary db)
         turn (:turn db)
         word (:word turn)
@@ -52,7 +52,7 @@
     ))
 
 (deftest second-game
-  (let [db (-> db/default-db
+  (let [db (-> default-db
                logic/first-turn
                (#(logic/update-turn % (get-in % [:turn :translation])))
                logic/first-turn)
@@ -64,8 +64,8 @@
 (deftest scores
   (let [expected "GOOD"
         wrong "BAD"
-        valids (get-in db/default-db [:static :valid-options])
-        options (:options db/default-db)
+        valids (get-in default-db [:static :valid-options])
+        options (:options default-db)
         checker (fn [answer options]
                   (logic/turn-points :correct-answer expected
                                      :players-answer answer
@@ -90,7 +90,7 @@
 
 
 (deftest update-board
-  (let [db-before (logic/first-turn db/default-db)
+  (let [db-before (logic/first-turn default-db)
         expected (get-in db-before [:turn :translation])
         wrong (some #(when (not= % expected) %) (get-in db-before [:turn :translation-choices]))]
 
