@@ -6,14 +6,18 @@
             :valid-options {:direction [:new-to-known :known-to-new :both]
                             :show-choices [:multiple-choice :free-text]
                             :num-choices (range 2 13)
-                            :ui-language [:english :hebrew]}}
+                            :ui-language [:english :hebrew]
+                            :num-buckets (range 3 10)}}
    :options {:ui-language :english
              :direction :new-to-known
              :num-choices 4
              :show-choices :multiple-choice
+             :num-buckets 3
              }
    :dynamic {:score 0
              :multiplier 1
+             :num-active-buckets 0
+             :bucketed-dictionary {}
              }
    :turn {}
    :dictionary {"إتّجه" "פנה, שם פניו אל",
@@ -210,7 +214,6 @@
                 "كافح" "נאבק ב",
                 "كذلك" "כמו כן",
                 "مع ذلك" "עם זאת, למרות זאת",
-
                 "كما" "כמו כן, כמו ש",
                 "لجنة" "ועדה",
                 "لجان" "ועידות",
