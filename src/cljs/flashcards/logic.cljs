@@ -4,11 +4,20 @@
   (-> db
       (assoc-in [:dynamic :score] 0)
       (assoc-in [:dynamic :multiplier] 1)
+      (assoc-in [:dynamic :bucketed-dictionary]
+                (mapv (fn [[word translation]] {:word word :translation translation :bucket 0})
+                      (:dictionary db)))
+      (assoc-in [:dynamic :active-buckets] (rand-int (get-in db [:options :num-buckets])))
       (assoc-in [:turn] nil)))
 
 (defn get-choices [db]
   (let [num-choices (get-in db [:options :num-choices])
-        word-pairs (->> db :dictionary shuffle (take num-choices))
+        dictionary (get-in db [:dynamic :bucketed-dictionary])
+        word-pairs (->> dictionary
+                        shuffle
+                        (filter #(= (:bucket %) 0))
+                        (take num-choices)
+                        (map (juxt :word :translation)))
         direction (get-in db [:options :direction])]
     (if (or (= direction :new-to-known)
             (and (= direction :both) (-> 2 rand-int zero?)))

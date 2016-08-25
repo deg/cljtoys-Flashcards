@@ -16,7 +16,6 @@
              }
    :dynamic {:score 0
              :multiplier 1
-             :num-active-buckets 0
              :bucketed-dictionary {}
              }
    :turn {}

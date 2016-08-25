@@ -14,16 +14,16 @@
 (deftest first-turn
   (let [db (logic/first-turn default-db)
         options (:options default-db)
-        dictionary (:dictionary db)
+        dictionary (get-in db [:dynamic :bucketed-dictionary])
         turn (:turn db)
         word (:word turn)
         translation (:translation turn)]
 
     (testing "Word in dictionary"
-      (is (some #{word} (map first dictionary))))
+      (is (some #{word} (map :word dictionary))))
 
     (testing "Translation in dictionary"
-      (is (some #{translation} (map second dictionary))))
+      (is (some #{translation} (map :translation dictionary))))
 
     (testing "Translation in other language"
       (is (not= (utils/arabic? word) (utils/arabic? translation))))
@@ -37,7 +37,7 @@
     (testing "Other (wrong) answers"
       (let [answers (:translation-choices turn)]
         (doseq [answer answers]
-          (is (some #{answer} (map second dictionary)))
+          (is (some #{answer} (map :translation dictionary)))
           (testing "Different language than word"
             (is (not= (utils/arabic? word) (utils/arabic? answer))))
           (testing "Same language as translation"
@@ -49,7 +49,20 @@
         (testing "Includes correct answer"
           (is (some #{translation} answers)))))
 
-    ))
+    (testing "buckets"
+      (let [bucketed (get-in db [:dynamic :bucketed-dictionary])]
+        (is (= (count bucketed)
+               (count (:dictionary db))))
+        (doseq [{:keys [word translation bucket]} bucketed]
+          (is (= bucket 0))
+          (is (not= (utils/arabic? word) (utils/arabic? translation)))
+          (is (or (utils/arabic? word) (utils/arabic? translation))))))
+
+    (testing "active buckets"
+      (let [active-buckets (get-in db [:dynamic :active-buckets])]
+        (is (integer? active-buckets))
+        (is (<= 0 active-buckets))
+        (is (< active-buckets (get-in db [:options :num-buckets])))))))
 
 (deftest second-game
   (let [db (-> default-db
