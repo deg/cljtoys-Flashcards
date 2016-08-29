@@ -8,23 +8,27 @@
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]))
 
+(defn score-bar-latest-turn []
+  (let [ui (re-frame/subscribe [:ui-language])
+        prev-turn(re-frame/subscribe [:prev-turn])]
+    (re-com/h-box
+     :justify :center
+     :children [(when @prev-turn
+                  (let [{:keys [answered-word players-answer correct-answer]} @prev-turn]
+                    (if  (= players-answer correct-answer)
+                      (lstr @ui :correct-score)
+                      ((lstr @ui :incorrect-score) answered-word correct-answer players-answer))))])))
+
 (defn score-bar []
   (let [ui (re-frame/subscribe [:ui-language])
         score (re-frame/subscribe [:score])
-        multiplier (re-frame/subscribe [:multiplier])
-        prev-turn (re-frame/subscribe [:prev-turn])]
+        multiplier (re-frame/subscribe [:multiplier])]
     [re-com/v-box
      :width "90%"
      :children [[re-com/h-box
                  :justify :end
                  :children [(str (lstr @ui :score) ": [" @score " x" @multiplier "]")]]
-                (re-com/h-box
-                 :justify :center
-                 :children [(when @prev-turn
-                              (let [{:keys [answered-word players-answer correct-answer]} @prev-turn]
-                                (if  (= players-answer correct-answer)
-                                  (lstr @ui :correct-score)
-                                  ((lstr @ui :incorrect-score) answered-word correct-answer players-answer))))])]]))
+                [score-bar-latest-turn]]]))
 
 (defn subject-word []
   (let [word (re-frame/subscribe [:word])]
