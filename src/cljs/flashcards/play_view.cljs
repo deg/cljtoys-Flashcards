@@ -4,6 +4,7 @@
   (:require
    [flashcards.string-table :refer [lstr]]
    [flashcards.utils :refer [arabic? hebrew?]]
+   [goog.string :as gstring]
    [re-com.core :as re-com :refer-macros [handler-fn]]
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]))
@@ -27,7 +28,14 @@
      :width "90%"
      :children [[re-com/h-box
                  :justify :end
-                 :children [(str (lstr @ui :score) ": [" @score " x" @multiplier "]")]]
+                 :children [(lstr @ui :score)
+                            ": ["
+                            ;; (need LTR to force minus-sign to left)
+                            [:span {:class "ltr-span"} (str @score)]
+                            (gstring/unescapeEntities "&nbsp;")
+                            " x"
+                            @multiplier
+                            "]"]]
                 [score-bar-latest-turn]]]))
 
 (defn subject-word []

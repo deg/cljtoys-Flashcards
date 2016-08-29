@@ -44,4 +44,6 @@
     [:.subject-word.arabic
      {:font-size (fpct (* subject-font-size arabic-multiplier))}]
 
-    ))
+    [:.ltr-span
+     {:direction "ltr"
+      :display "inline-block"}]))
