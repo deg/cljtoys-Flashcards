@@ -9,6 +9,31 @@
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]))
 
+(defn score-bar-game-score []
+  (let [ui (re-frame/subscribe [:ui-language])
+        score (re-frame/subscribe [:score])
+        multiplier (re-frame/subscribe [:multiplier])]
+    [re-com/h-box
+     :justify :end
+     :children [(lstr @ui :score)
+                ": ["
+                ;; (need LTR to force minus-sign to left)
+                [:span {:class "ltr-span"} (str @score)]
+                (gstring/unescapeEntities "&nbsp;")
+                " x"
+                @multiplier
+                "]"]]))
+
+(defn score-bar-buckets []
+  (let [ui (re-frame/subscribe [:ui-language])
+        counts (re-frame/subscribe [:bucket-counts])]
+    [re-com/h-box
+     :justify :end
+     :children [(lstr @ui :buckets)
+                ":"
+                (gstring/unescapeEntities "&nbsp;")
+                (str (map (fn [[bucket bcount]] bcount) @counts))]]))
+
 (defn score-bar-latest-turn []
   (let [ui (re-frame/subscribe [:ui-language])
         prev-turn(re-frame/subscribe [:prev-turn])]
@@ -21,22 +46,11 @@
                       ((lstr @ui :incorrect-score) answered-word correct-answer players-answer))))])))
 
 (defn score-bar []
-  (let [ui (re-frame/subscribe [:ui-language])
-        score (re-frame/subscribe [:score])
-        multiplier (re-frame/subscribe [:multiplier])]
-    [re-com/v-box
-     :width "90%"
-     :children [[re-com/h-box
-                 :justify :end
-                 :children [(lstr @ui :score)
-                            ": ["
-                            ;; (need LTR to force minus-sign to left)
-                            [:span {:class "ltr-span"} (str @score)]
-                            (gstring/unescapeEntities "&nbsp;")
-                            " x"
-                            @multiplier
-                            "]"]]
-                [score-bar-latest-turn]]]))
+  [re-com/v-box
+   :width "90%"
+   :children [[score-bar-game-score]
+              [score-bar-buckets]
+              [score-bar-latest-turn]]])
 
 (defn subject-word []
   (let [word (re-frame/subscribe [:word])]

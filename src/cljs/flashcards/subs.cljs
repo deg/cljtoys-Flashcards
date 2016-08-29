@@ -40,3 +40,13 @@
  (fn [db [_ option]]
    (-> @db (get-in [:static :valid-options option]) reaction)))
 
+(re-frame/register-sub
+ :bucket-counts
+ (fn [db]
+   (-> @db
+     (get-in [:dynamic :bucketed-dictionary])
+     ((partial map :bucket))
+     frequencies
+     sort
+     reaction)))
+

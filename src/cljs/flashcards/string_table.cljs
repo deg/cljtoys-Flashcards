@@ -7,6 +7,7 @@
   {:about           {:english "About"              :hebrew "אודות"}
    :and-not         {:english "and not"            :hebrew "ולא"}
    :both            {:english "Both"               :hebrew "שתיהם"}
+   :buckets         {:english "buckets"            :hebrew "דליים"}
    :correct-score   {:english "You are correct!"   :hebrew "נכון!"}
    :direction       {:english "direction"          :hebrew "כיוון"}
    :english         {:english "English"            :hebrew "אנגלית"}
