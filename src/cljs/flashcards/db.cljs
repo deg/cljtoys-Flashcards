@@ -13,7 +13,7 @@
              :direction :new-to-known
              :num-choices 4
              :show-choices :multiple-choice
-             :num-buckets 3
+             :num-buckets 5
              }
    :dynamic {:score 0
              :multiplier 1

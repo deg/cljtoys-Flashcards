@@ -102,6 +102,19 @@
                     (checker wrong (update these-options :num-choices inc))))))))))
 
 
+(deftest inc-dec
+  (let [db (logic/first-turn default-db)
+        num-buckets (get-in db [:options :num-buckets])]
+    (is (= 0 (logic/prev-bucket db 0)))
+    (is (= 0 (logic/prev-bucket db 1)))
+    (is (= 1 (logic/prev-bucket db 2)))
+    (is (= (- num-buckets 1) (logic/prev-bucket db num-buckets)))
+    (is (= (- num-buckets 1) (logic/next-bucket db num-buckets)))
+    (is (= (- num-buckets 1) (logic/next-bucket db (- num-buckets 1))))
+    (is (= (- num-buckets 1) (logic/next-bucket db (- num-buckets 2))))
+    (is (= (- num-buckets 2) (logic/next-bucket db (- num-buckets 3))))
+    (is (= 1 (logic/next-bucket db 0)))))
+
 (deftest update-board
   (let [db-before (logic/first-turn default-db)
         expected (get-in db-before [:turn :translation])
