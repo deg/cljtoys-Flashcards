@@ -16,9 +16,8 @@
         name(re-frame/subscribe [:name])]
     (fn []
       [re-com/v-box
-       :width "90%"
+       :align :center
        :children [[re-com/h-box
-                   :justify :center
                    :children [[re-com/title :label (lstr @ui @name) :level :level1]]]]])))
 
 (defn credits []
@@ -88,7 +87,7 @@
 
 (defn play-panel []
   [re-com/v-box
-   :align :start
+   :align :center
    :margin "1em"
    :gap "1em"
    :width "100%"
