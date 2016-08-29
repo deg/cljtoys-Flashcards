@@ -1,12 +1,14 @@
 (ns flashcards.core
-    (:require [reagent.core :as reagent]
-              [re-frame.core :as re-frame]
-              [devtools.core :as devtools]
-              [flashcards.handlers]
-              [flashcards.subs]
-              [flashcards.routes :as routes]
-              [flashcards.views :as views]
-              [flashcards.config :as config]))
+  "Boilerplate startup"
+  (:require
+   [devtools.core :as devtools]
+   [flashcards.config :as config]
+   [flashcards.handlers]
+   [flashcards.routes :as routes]
+   [flashcards.subs]
+   [flashcards.views :as views]
+   [re-frame.core :as re-frame]
+   [reagent.core :as reagent]))
 
 
 (defn dev-setup []

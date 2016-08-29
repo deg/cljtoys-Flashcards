@@ -1,10 +1,12 @@
 (ns flashcards.routes
+  "Client-side routing"
     (:require-macros [secretary.core :refer [defroute]])
-    (:import goog.History)
-    (:require [secretary.core :as secretary]
-              [goog.events :as events]
-              [goog.history.EventType :as EventType]
-              [re-frame.core :as re-frame]))
+    (:require
+     [goog.events :as events]
+     [goog.history.EventType :as EventType]
+     [re-frame.core :as re-frame]
+     [secretary.core :as secretary])
+    (:import goog.History))
 
 (defn hook-browser-navigation! []
   (doto (History.)

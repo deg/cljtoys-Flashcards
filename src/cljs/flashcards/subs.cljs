@@ -1,6 +1,9 @@
 (ns flashcards.subs
-    (:require-macros [reagent.ratom :refer [reaction]])
-    (:require [re-frame.core :as re-frame]))
+  "Subscribe side of teh reagent tango"
+  (:require-macros
+   [reagent.ratom :refer [reaction]])
+  (:require
+   [re-frame.core :as re-frame]))
 
 (defn simple-sub [key path]
   (re-frame/register-sub

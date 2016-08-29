@@ -1,4 +1,5 @@
 (ns flashcards.utils
+  "Random utilities"
   (:require))
 
 (defn arabic-char? [char]

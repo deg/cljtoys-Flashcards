@@ -1,10 +1,12 @@
 (ns flashcards.play-view
+  "Presentation view of the main gameplay view"
   (:require-macros [clojure.core.strint :as strint])
-  (:require [re-frame.core :as re-frame]
-            [re-com.core :as re-com :refer-macros [handler-fn]]
-            [reagent.core :as reagent]
-            [flashcards.string-table :refer [lstr]]
-            [flashcards.utils :refer [arabic? hebrew?]]))
+  (:require
+   [flashcards.string-table :refer [lstr]]
+   [flashcards.utils :refer [arabic? hebrew?]]
+   [re-com.core :as re-com :refer-macros [handler-fn]]
+   [re-frame.core :as re-frame]
+   [reagent.core :as reagent]))
 
 (defn score-bar []
   (let [ui (re-frame/subscribe [:ui-language])

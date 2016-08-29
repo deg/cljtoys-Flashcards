@@ -1,4 +1,5 @@
-(ns flashcards.db)
+(ns flashcards.db
+  "Default app state")
 
 (def default-db
   {:static {:name :flashcards

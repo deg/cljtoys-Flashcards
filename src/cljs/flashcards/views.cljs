@@ -1,10 +1,12 @@
 (ns flashcards.views
-    (:require [re-frame.core :as re-frame]
-              [re-com.core :as re-com :refer-macros [handler-fn]]
-              [reagent.core :as reagent]
-              [flashcards.string-table :refer [lstr]]
-              [flashcards.utils :refer [arabic? hebrew?]]
-              [flashcards.play-view :as play-view]))
+  "Catch-all for page-view code that has not yet been broken out"
+  (:require
+   [flashcards.play-view :as play-view]
+   [flashcards.string-table :refer [lstr]]
+   [flashcards.utils :refer [arabic? hebrew?]]
+   [re-com.core :as re-com :refer-macros [handler-fn]]
+   [re-frame.core :as re-frame]
+   [reagent.core :as reagent]))
 
 
 ;; home

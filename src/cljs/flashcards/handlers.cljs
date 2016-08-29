@@ -1,10 +1,13 @@
 (ns flashcards.handlers
-  (:require [re-frame.core :as re-frame]
-            [alandipert.storage-atom :refer [local-storage]]
-            [flashcards.db :as db]
-            [flashcards.logic :refer [first-turn update-turn]]))
+  "Handler side of the reagent tango"
+  (:require
+   [alandipert.storage-atom :refer [local-storage]]
+   [flashcards.db :as db]
+   [flashcards.logic :refer [first-turn update-turn]]
+   [re-frame.core :as re-frame]))
 
 
+;; [TODO] This stateful bit should be isolated better, and not be left in this file.
 (def persistent-options (local-storage (atom {}) :flashcard-options))
 
 (re-frame/register-handler

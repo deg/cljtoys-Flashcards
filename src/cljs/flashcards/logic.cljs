@@ -1,5 +1,10 @@
-(ns flashcards.logic (:require
-                      [clojure.set :as set]))
+(ns flashcards.logic
+  "Game logic. Everything here should be pure functions"
+  (:require
+   [clojure.set :as set]))
+
+;;; [TODO] Several of these functions still generate random state. All randomness should
+;;; come in via the parameters, to be explicit and controllable by the testing harness.
 
 (defn- init-game [db]
   (-> db

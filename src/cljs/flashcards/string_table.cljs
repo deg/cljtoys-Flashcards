@@ -1,7 +1,9 @@
 (ns flashcards.string-table
-  (:require-macros [clojure.core.strint :as strint]))
+  "Quik-n-dirty i10n translation tables"
+  (:require-macros
+   [clojure.core.strint :as strint]))
 
-(def string-table
+(def ^:private string-table
   {:about           {:english "About"              :hebrew "אודות"}
    :and-not         {:english "and not"            :hebrew "ולא"}
    :both            {:english "Both"               :hebrew "שתיהם"}
