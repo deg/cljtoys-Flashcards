@@ -1,4 +1,5 @@
-(ns flashcards.logic (:require))
+(ns flashcards.logic (:require
+                      [clojure.set :as set]))
 
 (defn- init-game [db]
   (-> db
@@ -22,7 +23,7 @@
     (if (or (= direction :new-to-known)
             (and (= direction :both) (-> 2 rand-int zero?)))
       word-pairs
-      (into [] (clojure.set/map-invert word-pairs)))))
+      (into [] (set/map-invert word-pairs)))))
 
 
 
