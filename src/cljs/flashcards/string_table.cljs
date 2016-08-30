@@ -7,9 +7,11 @@
   {:11th-grade-arabic {:english "11th-grade Arabic"  :hebrew "ערבית - אוצר מילים י\"א"}
    :about             {:english "About"              :hebrew "אודות"}
    :and-not           {:english "and not"            :hebrew "ולא"}
+   :arabic            {:english "arabic"             :hebrew "ערבית"}
    :basic-arabic      {:english "Basic Arabic"       :hebrew "ערבית בסיסי"}
    :both              {:english "Both"               :hebrew "שתיהם"}
    :buckets           {:english "buckets"            :hebrew "דליים"}
+   :capital           {:english "capital"            :hebrew "בירה"}
    :correct-score     {:english "You are correct!"   :hebrew "נכון!"}
    :dictionary        {:english "Dictionary"         :hebrew "מילון"}
    :direction         {:english "direction"          :hebrew "כיוון"}
@@ -24,6 +26,7 @@
    :num-choices       {:english "Num choices"        :hebrew "מס' תשובות"}
    :options           {:english "Options"            :hebrew "אפשרויות"}
    :score             {:english "Score"              :hebrew "ניקוד"}
+   :state             {:english "state"              :hebrew "מדינה"}
    :state-capitals    {:english "State capitals"     :hebrew "ערי בירה - מדינות ארה\"ב"}
    :prototype         {:english "Prototype"          :hebrew "אב טיפוס"}
    :show-choices      {:english "Show choices"       :hebrew "אפשרויות"}
@@ -49,8 +52,7 @@
     (number? key) key
 
     :else
-    (or (get-in string-table [key language])
-        (str "???-" key "-???"))))
+    (or (get-in string-table [key language]) key)))
 
 
 

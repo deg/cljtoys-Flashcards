@@ -1,6 +1,7 @@
 (ns flashcards.views
   "Catch-all for page-view code that has not yet been broken out"
   (:require
+   [flashcards.dicts.dicts :as dicts]
    [flashcards.play-view :as play-view]
    [flashcards.string-table :refer [lstr]]
    [flashcards.utils :refer [arabic? hebrew?]]
@@ -26,14 +27,15 @@
     [re-com/v-box
      :children [[re-com/title :label (str (lstr @ui :prototype) " v" @version) :level :level3]]]))
 
-(defn option-chooser [option disabled?]
+(defn option-chooser [option disabled? presentation-fn]
   (let [ui (re-frame/subscribe [:ui-language])
         option-value (re-frame/subscribe [:option option])
         option-choices (re-frame/subscribe [:valid-options option])
         model (reagent/atom :both)]
     (fn [option disabled?]
       (let [option-map (mapv (fn [choice]
-                               (let [id    (if (vector? choice) (first choice)  choice)
+                               (let [choice ((or presentation-fn identity) choice)
+                                     id    (if (vector? choice) (first choice)  choice)
                                      label (if (vector? choice) (second choice) choice)]
                                  {:id id :label (lstr @ui label)}))
                              @option-choices)]
@@ -50,16 +52,25 @@
 
 (defn options []
   (let [ui (re-frame/subscribe [:ui-language])
-        show-choices (re-frame/subscribe [:show-choices])]
+        show-choices (re-frame/subscribe [:show-choices])
+        dict (re-frame/subscribe [:option :dictionary])]
     (fn []
       [re-com/v-box
        :gap "0.6em"
        :children [[re-com/title :label (lstr @ui :options) :level :level2]
-                  [option-chooser :dictionary false]
-                  [option-chooser :direction false]
-                  [option-chooser :show-choices false]
-                  [option-chooser :num-choices (= @show-choices :free-text)]
-                  [option-chooser :ui-language]]])))
+                  [option-chooser :dictionary false nil]
+                  [option-chooser :direction false #(vector % (str (let [dic (@dict dicts/all-dictionaries)
+                                                                         from (lstr @ui (:from-language dic))
+                                                                         to (lstr @ui (:to-language dic))]
+                                                                     (str from
+                                                                          (case %
+                                                                            :new-to-known " \u2B05 "
+                                                                            :known-to-new " \u2B95 "
+                                                                            :both " \u2B0C ")
+                                                                          to))))]
+                  [option-chooser :show-choices false nil]
+                  [option-chooser :num-choices (= @show-choices :free-text) nil]
+                  [option-chooser :ui-language false nil]]])))
 
 
 (defn link-to-about-page []
