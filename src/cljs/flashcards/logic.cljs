@@ -1,7 +1,8 @@
 (ns flashcards.logic
   "Game logic. Everything here should be pure functions"
   (:require
-   [clojure.set :as set]))
+   [clojure.set :as set]
+   [flashcards.dicts.dicts :as dicts]))
 
 ;;; [TODO] Several of these functions still generate random state. All randomness should
 ;;; come in via the parameters, to be explicit and controllable by the testing harness.
@@ -12,7 +13,8 @@
       (assoc-in [:dynamic :multiplier] 1)
       (assoc-in [:dynamic :bucketed-dictionary]
                 (mapv (fn [[word translation]] {:word word :translation translation :bucket 0})
-                      (:dictionary db)))
+                      (let [dict (get-in db [:options :dictionary])]
+                        (-> dicts/all-dictionaries dict :words))))
       (assoc-in [:dynamic :active-buckets] (inc (rand-int (dec (get-in db [:options :num-buckets])))))
       (assoc-in [:turn] nil)))
 

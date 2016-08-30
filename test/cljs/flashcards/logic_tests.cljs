@@ -1,6 +1,7 @@
 (ns flashcards.logic-test
   (:require [cljs.test :refer-macros [deftest testing is]]
             [flashcards.db :refer [default-db]]
+            [flashcards.dicts.dicts :as dicts]
             [flashcards.utils :as utils]
             [flashcards.logic :as logic]))
 
@@ -50,9 +51,10 @@
           (is (some #{translation} answers)))))
 
     (testing "buckets"
-      (let [bucketed (get-in db [:dynamic :bucketed-dictionary])]
+      (let [dictionary (get-in db [:options :dictionary])
+            bucketed (get-in db [:dynamic :bucketed-dictionary])]
         (is (= (count bucketed)
-               (count (:dictionary db))))
+               (count (-> dicts/all-dictionaries dictionary :words))))
         (doseq [{:keys [word translation bucket]} bucketed]
           (is (= bucket 0))
           (is (not= (utils/arabic? word) (utils/arabic? translation)))

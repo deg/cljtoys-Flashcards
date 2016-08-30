@@ -32,7 +32,10 @@
         option-choices (re-frame/subscribe [:valid-options option])
         model (reagent/atom :both)]
     (fn [option disabled?]
-      (let [option-map (mapv (fn [choice] {:id choice :label (if (keyword? choice) (lstr @ui choice) choice)})
+      (let [option-map (mapv (fn [choice]
+                               (let [id    (if (vector? choice) (first choice)  choice)
+                                     label (if (vector? choice) (second choice) choice)]
+                                 {:id id :label (lstr @ui label)}))
                              @option-choices)]
         [re-com/h-box
          :justify :between
@@ -52,6 +55,7 @@
       [re-com/v-box
        :gap "0.6em"
        :children [[re-com/title :label (lstr @ui :options) :level :level2]
+                  [option-chooser :dictionary false]
                   [option-chooser :direction false]
                   [option-chooser :show-choices false]
                   [option-chooser :num-choices (= @show-choices :free-text)]

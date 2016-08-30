@@ -1,6 +1,7 @@
 (ns flashcards.db-test
   (:require [cljs.test :refer-macros [deftest testing is]]
             [flashcards.db :as db]
+            [flashcards.dicts.dicts :as dicts]
             [clojure.set :as set]))
 
 (let [the-db db/default-db]
@@ -10,8 +11,7 @@
       (is the-db)
       (is (:static the-db))
       (is (:options the-db))
-      (is (:dynamic the-db))
-      (is (:dictionary the-db))))
+      (is (:dynamic the-db))))
 
   (deftest check-db-version
     (is (get-in the-db [:static :name]))
@@ -20,7 +20,7 @@
       (is (re-matches #"\d+\.\d+\.\d+" version))))
 
   (deftest check-db-options
-    (let [known-options [:direction :num-choices :show-choices :ui-language :num-buckets]
+    (let [known-options [:dictionary :direction :num-choices :show-choices :ui-language :num-buckets]
           options (get-in the-db [:options])
           valid-options (get-in the-db [:static :valid-options])]
       (testing "has options"
@@ -38,11 +38,24 @@
         (testing "Is option default valid"
           (doseq [[option value] options]
             (testing option
-              (is (some #{value} (option valid-options)))))))))
+              (let [valids (option valid-options)
+                    valid-ids (map #(if (vector? %) (first %) %) valids)]
+                (is (some #{value} valid-ids)))))))))
 
   (deftest check-db-dictionary
-    (let [dictionary (get-in the-db [:dictionary])]
+    (doseq [dict (vals dicts/all-dictionaries)]
+      (testing "has name"
+        (is (keyword? (:name dict))))
+      (testing "has from language"
+        (is (keyword? (:from-language dict))))
+      (testing "has to language"
+        (is (keyword? (:to-language dict))))
+      (testing "has different languages"
+        (is (not= (:from-language dict) (:to-language dict))))
+      (testing "sane number of buckets"
+        (let [buckets (:num-buckets dict)]
+          (is (integer? buckets))
+          (is (>= buckets 1))
+          (is (<= buckets (get-in the-db [:options :num-buckets])))))
       (testing "big enough"
-        (is (> (count dictionary) (get-in the-db [:options :num-choices]))))))
-
-  )
+        (is (> (count (:words dict)) (get-in the-db [:options :num-choices])))) )))
