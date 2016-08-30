@@ -14,12 +14,14 @@
 
 (defn title []
   (let [ui (re-frame/subscribe [:ui-language])
-        name(re-frame/subscribe [:name])]
+        name (re-frame/subscribe [:name])
+        dict (re-frame/subscribe [:option :dictionary])]
     (fn []
       [re-com/v-box
        :align :center
-       :children [[re-com/h-box
-                   :children [[re-com/title :label (lstr @ui @name) :level :level1]]]]])))
+       :children [[re-com/title :label (lstr @ui @name) :level :level2]
+                  [re-com/title :label (lstr @ui (:name (@dict dicts/all-dictionaries))) :level :level3]
+                  ]])))
 
 (defn credits []
   (let [ui (re-frame/subscribe [:ui-language])
