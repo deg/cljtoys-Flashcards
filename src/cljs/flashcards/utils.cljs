@@ -17,3 +17,17 @@
 
 (defn hebrew? [string]
   (some hebrew-char? (seq string)))
+
+
+(defn spy
+  "Handy debugging aid. [TODO] Should only be exposed in dev env"
+  [label x]
+  (prn label x)
+  x)
+
+(defn spy-side
+  "Handy debugging aid. [TODO] Should only be exposed in dev env"
+  [label to-print to-return]
+  (prn label to-print)
+  to-return)
+
