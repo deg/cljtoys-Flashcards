@@ -44,7 +44,7 @@
  :bucket-counts
  (fn [db]
    (-> @db
-     (get-in [:dynamic :bucketed-dictionary])
+     (get-in [:dynamic :bucketed-dictionary :words])
      ((partial map :bucket))
      frequencies
      sort

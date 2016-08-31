@@ -2,7 +2,9 @@
   "Game logic. Everything here should be pure functions"
   (:require
    [clojure.set :as set]
-   [flashcards.dicts.dicts :as dicts]))
+   [flashcards.dicts.dicts :as dicts]
+   [flashcards.utils :as utils]
+   ))
 
 ;;; [TODO] Several of these functions still generate random state. All randomness should
 ;;; come in via the parameters, to be explicit and controllable by the testing harness.
@@ -12,17 +14,15 @@
       (assoc-in [:dynamic :score] 0)
       (assoc-in [:dynamic :multiplier] 1)
       (assoc-in [:dynamic :bucketed-dictionary]
-                (mapv (fn [[word translation]] {:word word :translation translation :bucket 0})
-                      (let [dict (get-in db [:options :dictionary])]
-                        (-> dicts/all-dictionaries dict :words))))
+                (dicts/get-dictionary (get-in db [:options :dictionary])))
       (assoc-in [:dynamic :active-buckets] (inc (rand-int (dec (get-in db [:options :num-buckets])))))
       (assoc-in [:turn] nil)))
 
 (defn- get-choices [db]
   (let [num-choices (get-in db [:options :num-choices])
-        dictionary (get-in db [:dynamic :bucketed-dictionary])
+        word-items (get-in db [:dynamic :bucketed-dictionary :words])
         num-active-buckets (get-in db [:dynamic :active-buckets])]
-    (->> dictionary
+    (->> word-items
          shuffle
          (filter #(< (:bucket %) num-active-buckets))
          (take num-choices))))
@@ -71,10 +71,13 @@
     (min (inc bucket) max-bucket)))
 
 (defn update-word-score [db word-item correct?]
-  (let [word-pos (first (keep-indexed (fn [idx x] (when (= x word-item) idx))
-                                      (get-in db [:dynamic :bucketed-dictionary])))
-        new-item (update word-item :bucket (partial (if correct? next-bucket prev-bucket) db))]
-    (assoc-in db [:dynamic :bucketed-dictionary word-pos] new-item)))
+  (let [dict-name (get-in db [:dynamic :bucketed-dictionary :name])
+        word-pos (first (keep-indexed (fn [idx x] (when (= x word-item) idx))
+                                      (get-in db [:dynamic :bucketed-dictionary :words])))
+        bucket (partial (if correct? next-bucket prev-bucket) db)
+        new-item (update word-item :bucket bucket)]
+    (dicts/persist-bucket dict-name new-item)
+    (assoc-in db [:dynamic :bucketed-dictionary :words word-pos] new-item)))
 
 (defn update-turn [db players-answer]
   (let [answered-word (get-in db [:turn :word])

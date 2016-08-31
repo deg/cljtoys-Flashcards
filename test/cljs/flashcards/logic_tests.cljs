@@ -15,16 +15,16 @@
 (deftest first-turn
   (let [db (logic/first-turn default-db)
         options (:options default-db)
-        dictionary (get-in db [:dynamic :bucketed-dictionary])
+        word-items (get-in db [:dynamic :bucketed-dictionary :words])
         turn (:turn db)
         word (:word turn)
         translation (:translation turn)]
 
     (testing "Word in dictionary"
-      (is (some #{word} (map :word dictionary))))
+      (is (some #{word} (map :word word-items))))
 
     (testing "Translation in dictionary"
-      (is (some #{translation} (map :translation dictionary))))
+      (is (some #{translation} (map :translation word-items))))
 
     (testing "Translation in other language"
       (is (not= (utils/arabic? word) (utils/arabic? translation))))
@@ -33,12 +33,12 @@
       (is (not (:prev-turn turn))))
 
     (testing "Translation matches word"
-      (is translation (get (into {} dictionary) word)))
+      (is translation (get (into {} word-items) word)))
 
     (testing "Other (wrong) answers"
       (let [answers (:translation-choices turn)]
         (doseq [answer answers]
-          (is (some #{answer} (map :translation dictionary)))
+          (is (some #{answer} (map :translation word-items)))
           (testing "Different language than word"
             (is (not= (utils/arabic? word) (utils/arabic? answer))))
           (testing "Same language as translation"
@@ -52,13 +52,17 @@
 
     (testing "buckets"
       (let [dictionary (get-in db [:options :dictionary])
-            bucketed (get-in db [:dynamic :bucketed-dictionary])]
-        (is (= (count bucketed)
-               (count (-> dicts/all-dictionaries dictionary :words))))
+            bucketed (get-in db [:dynamic :bucketed-dictionary :words])
+            max-buckets (get-in db [:options :num-buckets])]
+        (testing "structure"
+          (is (= (count bucketed)
+                 (count (-> dictionary dicts/get-dictionary :words)))))
         (doseq [{:keys [word translation bucket]} bucketed]
-          (is (= bucket 0))
-          (is (not= (utils/arabic? word) (utils/arabic? translation)))
-          (is (or (utils/arabic? word) (utils/arabic? translation))))))
+          (testing word
+            (is (>= bucket 0))
+            (is (< bucket max-buckets))
+            (is (not= (utils/arabic? word) (utils/arabic? translation)))
+            (is (or (utils/arabic? word) (utils/arabic? translation)))))))
 
     (testing "active buckets"
       (let [active-buckets (get-in db [:dynamic :active-buckets])]

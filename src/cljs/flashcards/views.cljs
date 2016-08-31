@@ -20,7 +20,7 @@
       [re-com/v-box
        :align :center
        :children [[re-com/title :label (lstr @ui @name) :level :level2]
-                  [re-com/title :label (lstr @ui (:name (@dict dicts/all-dictionaries))) :level :level3]
+                  [re-com/title :label (lstr @ui (:name (dicts/get-dictionary @dict))) :level :level3]
                   ]])))
 
 (defn credits []
@@ -61,7 +61,7 @@
        :gap "0.6em"
        :children [[re-com/title :label (lstr @ui :options) :level :level2]
                   [option-chooser :dictionary false nil]
-                  [option-chooser :direction false #(vector % (str (let [dic (@dict dicts/all-dictionaries)
+                  [option-chooser :direction false #(vector % (str (let [dic (dicts/get-dictionary @dict)
                                                                          from (lstr @ui (:from-language dic))
                                                                          to (lstr @ui (:to-language dic))]
                                                                      (str from
