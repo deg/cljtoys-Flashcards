@@ -26,7 +26,7 @@
     (testing "Translation in dictionary"
       (is (some #{translation} (map :translation word-items))))
 
-    (testing "Translation in other language"
+    #_(testing "Translation in other language"
       (is (not= (utils/arabic? word) (utils/arabic? translation))))
 
     (testing "No prev-turn state at start of game"
@@ -39,7 +39,7 @@
       (let [answers (:translation-choices turn)]
         (doseq [answer answers]
           (is (some #{answer} (map :translation word-items)))
-          (testing "Different language than word"
+          #_(testing "Different language than word"
             (is (not= (utils/arabic? word) (utils/arabic? answer))))
           (testing "Same language as translation"
             (is (= (utils/arabic? translation) (utils/arabic? answer)))))
@@ -61,8 +61,8 @@
           (testing word
             (is (>= bucket 0))
             (is (< bucket max-buckets))
-            (is (not= (utils/arabic? word) (utils/arabic? translation)))
-            (is (or (utils/arabic? word) (utils/arabic? translation)))))))
+            #_(is (not= (utils/arabic? word) (utils/arabic? translation)))
+            #_(is (or (utils/arabic? word) (utils/arabic? translation)))))))
 
     (testing "active buckets"
       (let [active-buckets (get-in db [:dynamic :active-buckets])]
