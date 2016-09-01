@@ -38,6 +38,12 @@
       :box-shadow (str "inset " box-shadow)
       }]
 
+    [:.current-bucket
+     {:font-weight "bold"
+      :text-decoration "underline"}]
+    [:.active-bucket
+     {:color "darkred"}]
+
 
     [:.subject-word
      {:font-size (fpct subject-font-size)}]

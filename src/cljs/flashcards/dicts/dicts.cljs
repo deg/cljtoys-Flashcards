@@ -5,6 +5,12 @@
    [flashcards.dicts.arabic-grade11 :as arabic-grade11]
    [flashcards.dicts.state-capitals :as state-capitals]))
 
+(def ^:private all-dictionaries
+  {:arabic-basic arabic-basic/dict
+   :arabic-grade11 arabic-grade11/dict
+   :state-capitals state-capitals/dict})
+
+
 (def ^:private bucket-atoms
   {:basic-arabic   (local-storage (atom {}) :buckets-arabic-basic)
    :11th-grade-arabic (local-storage (atom {}) :buckets-arabic-grade11)
@@ -25,7 +31,6 @@
   )
 
 
-
 (defn- init-dictionary [dictionary]
   (let [name (:name dictionary)]
     (update dictionary :words
@@ -34,12 +39,6 @@
                       :translation translation
                       :bucket (lookup-persisted-bucket name word)})
                    %))))
-
-(def ^:private all-dictionaries
-  {:arabic-basic (init-dictionary arabic-basic/dict)
-   :arabic-grade11 (init-dictionary arabic-grade11/dict)
-   :state-capitals (init-dictionary state-capitals/dict)})
-
 
 (defn get-names []
   (into {} (for [[key dict] all-dictionaries]

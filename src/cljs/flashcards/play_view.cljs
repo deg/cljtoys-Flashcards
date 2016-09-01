@@ -26,13 +26,26 @@
 
 (defn score-bar-buckets []
   (let [ui (re-frame/subscribe [:ui-language])
-        counts (re-frame/subscribe [:bucket-counts])]
+        counts (re-frame/subscribe [:bucket-counts])
+        num-buckets (re-frame/subscribe [:option :num-buckets])
+        current-bucket (re-frame/subscribe [:bucket])
+        active-buckets (re-frame/subscribe [:active-buckets])
+        nbsp (gstring/unescapeEntities "&nbsp;")]
     [re-com/h-box
      :justify :end
      :children [(lstr @ui :buckets)
                 ":"
-                (gstring/unescapeEntities "&nbsp;")
-                (str (map (fn [[bucket bcount]] bcount) @counts))]]))
+                nbsp
+                (let [count-map (into {} @counts)]
+                  (into [:span]
+                        (interpose nbsp
+                                   (mapv (fn [n]
+                                           [:span {:class
+                                                   (str (if (= n @current-bucket) "current-bucket" "")
+                                                        " " "bucket-" n " "
+                                                        (if (< n @active-buckets) "active-bucket" ""))}
+                                            (str (get count-map n 0))])
+                                         (range @num-buckets)))))]]))
 
 (defn score-bar-latest-turn []
   (let [ui (re-frame/subscribe [:ui-language])

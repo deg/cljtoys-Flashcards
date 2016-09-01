@@ -14,20 +14,26 @@
       (assoc-in [:dynamic :score] 0)
       (assoc-in [:dynamic :multiplier] 1)
       (assoc-in [:dynamic :bucketed-dictionary]
-                (dicts/get-dictionary (get-in db [:options :dictionary])))
+                (-> db (get-in [:options :dictionary]) dicts/get-dictionary dicts/init-dictionary))
       (assoc-in [:dynamic :active-buckets] (inc (rand-int (dec (get-in db [:options :num-buckets])))))
       (assoc-in [:turn] nil)))
 
-(defn- get-choices [db]
-  (let [num-choices (get-in db [:options :num-choices])
-        word-items (get-in db [:dynamic :bucketed-dictionary :words])
-        num-active-buckets (get-in db [:dynamic :active-buckets])]
+(defn- get-word [db]
+  (let [word-items (get-in db [:dynamic :bucketed-dictionary :words])
+        num-active-buckets (get-in db [:dynamic :active-buckets])
+        available (filter #(< (:bucket %) num-active-buckets) word-items)]
+    (rand-nth available)))
+
+(defn- get-other-words [db correct-word]
+  (let [word-items (get-in db [:dynamic :bucketed-dictionary :words])
+        num-needed (dec (get-in db [:options :num-choices]))]
     (->> word-items
          shuffle
-         (filter #(< (:bucket %) num-active-buckets))
-         (take num-choices))))
+         (remove #(= % correct-word))
+         (take num-needed))))
 
-(defn- turn-data [db [correct-choice & other-choices]]
+;; [TODO] Refactor "choice" to "word" or "word-item" soon
+(defn- turn-data [db correct-choice other-choices]
   (let [direction (get-in db [:options :direction])
         forward? (or (= direction :new-to-known)
                      (and (= direction :both) (zero? (rand-int 2))))
@@ -41,10 +47,12 @@
      :translation-choices translation-choices}))
 
 (defn- setup-turn [db]
-  (assoc db :turn
-         (merge (:turn db)
-                {:text ""}
-                (turn-data db (get-choices db)))))
+  (let [correct-word (get-word db)
+        other-words (get-other-words db correct-word)]
+    (assoc db :turn
+           (merge (:turn db)
+                  {:text ""}
+                  (turn-data db correct-word other-words)))))
 
 (defn first-turn [db]
   (-> db init-game setup-turn))

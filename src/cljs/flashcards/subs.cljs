@@ -19,9 +19,11 @@
 (simple-sub :show-choices [:options :show-choices])
 (simple-sub :active-panel [:active-panel])
 (simple-sub :score [:dynamic :score])
+(simple-sub :active-buckets [:dynamic :active-buckets])
 (simple-sub :multiplier [:dynamic :multiplier])
 (simple-sub :prev-turn [:turn :prev-turn])
 (simple-sub :text [:turn :text])
+(simple-sub :bucket [:turn :correct-choice :bucket])
 (simple-sub :ui-language [:options :ui-language])
 
 
