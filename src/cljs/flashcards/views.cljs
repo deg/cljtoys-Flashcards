@@ -65,10 +65,13 @@
                                                                          from (lstr @ui (:from-language dic))
                                                                          to (lstr @ui (:to-language dic))]
                                                                      (str from
+                                                                          ;; [TODO] Reinstate nice arrows if can
+                                                                          ;; work on Android. Or, use images
+                                                                          ;; (be aware of RTL vs LTR for arrows!)
                                                                           (case %
-                                                                            :new-to-known " \u2B05 "
-                                                                            :known-to-new " \u2B95 "
-                                                                            :both " \u2B0C ")
+                                                                            :new-to-known " -> " #_" \u2B05 "
+                                                                            :known-to-new " <- " #_" \u2B95 "
+                                                                            :both " <-> "        #_" \u2B0C ")
                                                                           to))))]
                   [option-chooser :show-choices false nil]
                   [option-chooser :num-choices (= @show-choices :free-text) nil]
