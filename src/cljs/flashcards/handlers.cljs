@@ -39,4 +39,6 @@
 (re-frame/register-handler
  :set-active-buckets
  (fn [db [_ n]]
-   (assoc-in db [:dynamic :active-buckets] n)))
+   (-> db
+       (assoc-in [:dynamic :active-buckets] n)
+       (update-turn nil))))

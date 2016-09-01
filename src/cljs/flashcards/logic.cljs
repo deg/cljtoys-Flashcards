@@ -22,7 +22,8 @@
   (let [word-items (get-in db [:dynamic :bucketed-dictionary :words])
         num-active-buckets (get-in db [:dynamic :active-buckets])
         available (filter #(< (:bucket %) num-active-buckets) word-items)]
-    (rand-nth available)))
+    (when-not (zero? (count available))
+      (rand-nth available))))
 
 (defn- get-other-words [db correct-word]
   (let [word-items (get-in db [:dynamic :bucketed-dictionary :words])
@@ -88,16 +89,18 @@
     (assoc-in db [:dynamic :bucketed-dictionary :words word-pos] new-item)))
 
 (defn update-turn [db players-answer]
-  (let [answered-word (get-in db [:turn :word])
-        correct-answer (get-in db [:turn :translation])
-        points (turn-points :players-answer players-answer
-                            :correct-answer correct-answer
-                            :options (:options db))
-        new-score (+ (int points) (get-in db [:dynamic :score]))]
-    (-> db
-        (assoc-in [:turn :prev-turn]
-                  {:answered-word answered-word, :players-answer players-answer, :correct-answer correct-answer})
-        (assoc-in [:dynamic :score] new-score)
-        (update-word-score (get-in db [:turn :correct-choice]) (= players-answer correct-answer))
-        setup-turn)))
+  (if (not players-answer)
+    (setup-turn db)
+    (let [answered-word (get-in db [:turn :word])
+          correct-answer (get-in db [:turn :translation])
+          points (turn-points :players-answer players-answer
+                              :correct-answer correct-answer
+                              :options (:options db))
+          new-score (+ (int points) (get-in db [:dynamic :score]))]
+      (-> db
+          (assoc-in [:turn :prev-turn]
+                    {:answered-word answered-word, :players-answer players-answer, :correct-answer correct-answer})
+          (assoc-in [:dynamic :score] new-score)
+          (update-word-score (get-in db [:turn :correct-choice]) (= players-answer correct-answer))
+          setup-turn))))
 
