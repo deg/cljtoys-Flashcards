@@ -40,9 +40,10 @@
                   (into [:span]
                         (interpose nbsp
                                    (mapv (fn [n]
-                                           [:span {:class
+                                           [:span {:on-click #(re-frame/dispatch [:set-active-buckets (inc n)])
+                                                   :class
                                                    (str (if (= n @current-bucket) "current-bucket" "")
-                                                        " " "bucket-" n " "
+                                                        " bucket "
                                                         (if (< n @active-buckets) "active-bucket" ""))}
                                             (str (get count-map n 0))])
                                          (range @num-buckets)))))]]))

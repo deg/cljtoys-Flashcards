@@ -38,6 +38,9 @@
       :box-shadow (str "inset " box-shadow)
       }]
 
+    [:.bucket
+     {:cursor "pointer"
+      :color "gray"}]
     [:.current-bucket
      {:font-weight "bold"
       :text-decoration "underline"}]

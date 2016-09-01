@@ -10,7 +10,7 @@
    :arabic            {:english "arabic"             :hebrew "ערבית"}
    :basic-arabic      {:english "Basic Arabic"       :hebrew "ערבית בסיסי"}
    :both              {:english "Both"               :hebrew "שתיהם"}
-   :buckets           {:english "buckets"            :hebrew "דליים"}
+   :buckets           {:english "decks"              :hebrew "חפיסות"}
    :capital           {:english "capital"            :hebrew "בירה"}
    :correct-score     {:english "You are correct!"   :hebrew "נכון!"}
    :dictionary        {:english "Dictionary"         :hebrew "מילון"}

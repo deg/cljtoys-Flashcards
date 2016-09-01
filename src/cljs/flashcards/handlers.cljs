@@ -35,3 +35,8 @@
  :score-answer
  (fn [db [_ players-answer]]
    (update-turn db (clojure.string/trim players-answer))))
+
+(re-frame/register-handler
+ :set-active-buckets
+ (fn [db [_ n]]
+   (assoc-in db [:dynamic :active-buckets] n)))
