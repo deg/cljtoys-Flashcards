@@ -15,7 +15,7 @@
       (assoc-in [:dynamic :multiplier] 1)
       (assoc-in [:dynamic :bucketed-dictionary]
                 (-> db (get-in [:options :dictionary]) dicts/get-dictionary dicts/init-dictionary))
-      (assoc-in [:dynamic :active-buckets] (inc (rand-int (dec (get-in db [:options :num-buckets])))))
+      (assoc-in [:dynamic :active-buckets] (inc (rand-int (get-in db [:options :num-buckets]))))
       (assoc-in [:turn] nil)))
 
 (defn- get-word [db]
@@ -78,8 +78,8 @@
   (max (dec bucket) 0))
 
 (defn- next-bucket [db bucket]
-  (let [max-bucket (dec (get-in db [:options :num-buckets]))]
-    (min (inc bucket) max-bucket)))
+  (let [num-buckets (get-in db [:options :num-buckets])]
+    (min (inc bucket) (dec num-buckets))))
 
 (defn update-word-score [db word-item correct?]
   (let [dict-name (get-in db [:dynamic :bucketed-dictionary :name])
