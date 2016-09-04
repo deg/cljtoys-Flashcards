@@ -44,7 +44,9 @@
         translation-choices (shuffle (conj other-translations translation))]
     {:word word
      :correct-choice correct-choice
+     :other-choices other-choices
      :translation translation
+     :forward? forward?
      :translation-choices translation-choices}))
 
 (defn- setup-turn [db]
@@ -99,7 +101,11 @@
           new-score (+ (int points) (get-in db [:dynamic :score]))]
       (-> db
           (assoc-in [:turn :prev-turn]
-                    {:answered-word answered-word, :players-answer players-answer, :correct-answer correct-answer})
+                    {:answered-word answered-word,
+                     :players-answer players-answer,
+                     :correct-answer correct-answer
+                     :other-choices (get-in db [:turn :other-choices])
+                     :forward? (get-in db [:turn :forward?])})
           (assoc-in [:dynamic :score] new-score)
           (update-word-score (get-in db [:turn :correct-choice]) (= players-answer correct-answer))
           setup-turn))))

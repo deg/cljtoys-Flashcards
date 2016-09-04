@@ -2,6 +2,7 @@
   "Presentation view of the main gameplay view"
   (:require-macros [clojure.core.strint :as strint])
   (:require
+   [flashcards.dicts.dicts :as dicts]
    [flashcards.string-table :refer [lstr]]
    [flashcards.utils :refer [arabic? hebrew?]]
    [goog.string :as gstring]
@@ -50,14 +51,28 @@
 
 (defn score-bar-latest-turn []
   (let [ui (re-frame/subscribe [:ui-language])
-        prev-turn(re-frame/subscribe [:prev-turn])]
+        prev-turn (re-frame/subscribe [:prev-turn])
+        dict (re-frame/subscribe [:option :dictionary])]
     (re-com/h-box
      :justify :center
      :children [(when @prev-turn
-                  (let [{:keys [answered-word players-answer correct-answer]} @prev-turn]
+                  (let [{:keys [answered-word players-answer correct-answer other-choices]} @prev-turn
+                        answer-type (:answer-type (dicts/get-dictionary @dict))]
                     (if  (= players-answer correct-answer)
                       (lstr @ui :correct-score)
-                      ((lstr @ui :incorrect-score) answered-word correct-answer players-answer))))])))
+                      (let [forward? (:forward? @prev-turn)
+                            answer-type (lstr @ui answer-type)
+                            source (if forward? :word :translation)
+                            dest (if forward? :translation :word)
+                            word-for-players-answer (source (first (filter #(= (dest %) players-answer)
+                                                                           other-choices)))
+                            line1-format (if forward? :incorrect-score-forward :incorrect-score-reverse)
+                            line2-format (if forward? :incorrect-score-forward-second-line :incorrect-score-reverse-second-line)]
+                        [re-com/v-box
+                         :children [((lstr @ui line1-format)
+                                     answer-type answered-word correct-answer players-answer word-for-players-answer)
+                                    ((lstr @ui line2-format)
+                                     answer-type answered-word correct-answer players-answer word-for-players-answer)]]))))])))
 
 (defn score-bar []
   [re-com/v-box

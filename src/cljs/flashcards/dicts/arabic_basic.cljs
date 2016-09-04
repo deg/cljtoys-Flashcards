@@ -4,6 +4,7 @@
   {:name :basic-arabic
    :from-language :arabic
    :to-language :english
+   :answer-type :translation
    :num-buckets 3
    :words {"من" "of"
            "و" "and"

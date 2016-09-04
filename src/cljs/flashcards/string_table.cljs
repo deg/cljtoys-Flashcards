@@ -33,17 +33,45 @@
    :prototype         {:english "Prototype"          :hebrew "אב טיפוס"}
    :show-choices      {:english "Show choices"       :hebrew "אפשרויות"}
    :start-game        {:english "Start game"         :hebrew "התחל משחק"}
+   :translation       {:english "translation"        :hebrew "תרגום"}
    :ui-language       {:english "Interface language" :hebrew "שפת תצוגה"}
 
    ;; Interpolated strings (still a bit kludgy)
-   :incorrect-score
+   :incorrect-score-forward
    {:english
-    (fn [answered-word correct-answer players-answer]
-      (strint/<< "\"~{answered-word}\" is \"~{correct-answer}\", not \"~{players-answer}\"."))
+    (fn [answer-type answered-word correct-answer players-answer word-for-players-answer]
+      (strint/<< "The ~{answer-type} of ~{answered-word} is ~{correct-answer}, not ~{players-answer}."))
     :hebrew
-    (fn [answered-word correct-answer players-answer]
-      (strint/<< "\"~{answered-word}\" היא \"~{correct-answer}\" ולא \"~{players-answer}\"."))
+    (fn [answer-type answered-word correct-answer players-answer word-for-players-answer]
+      (strint/<< "ה~{answer-type} של ~{answered-word} היא ~{correct-answer} ולא ~{players-answer}."))
     }
+
+   :incorrect-score-forward-second-line
+   {:english
+    (fn [answer-type answered-word correct-answer players-answer word-for-players-answer]
+      (strint/<< "~{players-answer} is the ~{answer-type} of ~{word-for-players-answer}."))
+    :hebrew
+    (fn [answer-type answered-word correct-answer players-answer word-for-players-answer]
+      (strint/<< "~{players-answer} היא ה~{answer-type} של ~{word-for-players-answer}"))
+    }
+
+   :incorrect-score-reverse
+   {:english
+    (fn [answer-type answered-word correct-answer players-answer word-for-players-answer]
+      (strint/<< "~{answered-word} is the ~{answer-type} of ~{correct-answer}, not of ~{players-answer}."))
+    :hebrew
+    (fn [answer-type answered-word correct-answer players-answer word-for-players-answer]
+      (strint/<< "~{answered-word} היא ה~{answer-type} של ~{correct-answer}, לא של ~{players-answer}."))
+    }
+
+   :incorrect-score-reverse-second-line
+   {:english
+    (fn [answer-type answered-word correct-answer players-answer word-for-players-answer]
+      (strint/<< "~{word-for-players-answer} is the ~{answer-type} of ~{players-answer}."))
+    :hebrew
+    (fn [answer-type answered-word correct-answer players-answer word-for-players-answer]
+      (strint/<< "~{word-for-players-answer} היא ה ~{answer-type} של ~{players-answer}."))}
+
    })
 		
 

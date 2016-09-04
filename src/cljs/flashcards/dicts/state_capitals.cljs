@@ -4,6 +4,7 @@
   {:name :state-capitals
    :from-language :state
    :to-language :capital
+   :answer-type :capital
    :num-buckets 3
    :words {"Alabama"	"Montgomery"
            "Alaska"	"Juneau"
