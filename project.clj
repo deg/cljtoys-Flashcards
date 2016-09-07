@@ -8,19 +8,15 @@
                  [re-com "0.8.3"]
                  [secretary "1.2.3"]
                  [garden "1.3.2"]
-
-                 ;; Atom interface to local storage
-                 [alandipert/storage-atom "2.0.1"]
-
-                 ;; Needed, per https://github.com/Day8/re-frame-template/issues/32 and
-                 ;; https://github.com/Day8/re-frame-template/commit/8442988d089587ac96101d7ae82626a10b03b5c5
                  [ns-tracker "0.3.0"]
-
                  [compojure "1.5.0"]
                  [yogthos/config "0.8"]
-                 [ring "1.4.0"]]
+                 [ring "1.4.0"]
 
-  :plugins [[lein-cljsbuild "1.1.3"]
+                 ;; Atom interface to local storage
+                 [alandipert/storage-atom "2.0.1"]]
+
+  :plugins [[lein-cljsbuild "1.1.4"]
             [lein-garden "0.2.8"]]
 
   :min-lein-version "2.5.3"
@@ -29,7 +25,6 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"
-                                    ;; [TODO] Until I fix https://degel.fogbugz.com/f/cases/445/CSS-not-deployed
                                     "resources/public/css"]
 
   :figwheel {:css-dirs ["resources/public/css"]
@@ -43,15 +38,13 @@
 
   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
-  :uberjar-name "flashcards.jar"
-
   :profiles
   {:dev
    {:dependencies [
-                   [figwheel-sidecar "0.5.4-3"]
+                   [figwheel-sidecar "0.5.6"]
                    [com.cemerick/piggieback "0.2.1"]]
 
-    :plugins      [[lein-figwheel "0.5.4-3"]
+    :plugins      [[lein-figwheel "0.5.6"]
                    [lein-doo "0.1.6"]
                    [cider/cider-nrepl "0.14.0-SNAPSHOT"]]
     }}
@@ -72,12 +65,14 @@
      :jar true
      :compiler     {:main            flashcards.core
                     :output-to       "resources/public/js/compiled/app.js"
+                    :output-dir      "resources/public/js/compiled/out-min"
                     :optimizations   :advanced
                     :closure-defines {goog.DEBUG false}
                     :pretty-print    false}}
     {:id           "test"
      :source-paths ["src/cljs" "test/cljs"]
      :compiler     {:output-to     "resources/public/js/compiled/test.js"
+                    :output-dir    "resources/public/js/compiled/out-test"
                     :main          flashcards.runner
                     :optimizations :none}}
     ]}
@@ -86,5 +81,7 @@
 
   :aot [flashcards.server]
 
-  :prep-tasks [["cljsbuild" "once" "min"] ["garden" "once"] "compile"]
+  :uberjar-name "flashcards.jar"
+
+  :prep-tasks [["cljsbuild" "once" "min"]["garden" "once"] "compile"]
   )
