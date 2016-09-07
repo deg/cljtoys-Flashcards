@@ -67,8 +67,8 @@
     (testing "active buckets"
       (let [active-buckets (get-in db [:dynamic :active-buckets])]
         (is (integer? active-buckets))
-        (is (<= 0 active-buckets))
-        (is (< active-buckets (get-in db [:options :num-buckets])))))))
+        (is (< 0 active-buckets))
+        (is (<= active-buckets (get-in db [:options :num-buckets])))))))
 
 (deftest second-game
   (let [db (-> default-db
