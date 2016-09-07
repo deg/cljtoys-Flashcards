@@ -69,10 +69,11 @@
                             line1-format (if forward? :incorrect-score-forward :incorrect-score-reverse)
                             line2-format (if forward? :incorrect-score-forward-second-line :incorrect-score-reverse-second-line)]
                         [re-com/v-box
-                         :children [((lstr @ui line1-format)
-                                     answer-type answered-word correct-answer players-answer word-for-players-answer)
-                                    ((lstr @ui line2-format)
-                                     answer-type answered-word correct-answer players-answer word-for-players-answer)]]))))])))
+                         :children (mapv (fn [line-format] [re-com/box
+                                                            :child ((lstr @ui line-format)
+                                                                    answer-type answered-word correct-answer
+                                                                    players-answer word-for-players-answer)])
+                                         [line1-format line2-format])]))))])))
 
 (defn score-bar []
   [re-com/v-box

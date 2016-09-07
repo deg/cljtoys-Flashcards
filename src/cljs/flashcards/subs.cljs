@@ -5,8 +5,10 @@
   (:require
    [re-frame.core :as re-frame]))
 
+;; [TODO] Move from reg-sub-raw to reg-sub once I can find the new re-frame docs
+
 (defn simple-sub [key path]
-  (re-frame/register-sub
+  (re-frame/reg-sub-raw
    key
    (fn [db]
      (-> @db (get-in path) reaction))))
@@ -27,22 +29,22 @@
 (simple-sub :ui-language [:options :ui-language])
 
 
-(re-frame/register-sub
+(re-frame/reg-sub-raw
  :translation-choice
  (fn [db [_ n]]
    (-> @db (get-in [:turn :translation-choices n]) reaction)))
 
-(re-frame/register-sub
+(re-frame/reg-sub-raw
  :option
  (fn [db [_ option]]
    (-> @db (get-in [:options option]) reaction)))
 
-(re-frame/register-sub
+(re-frame/reg-sub-raw
  :valid-options
  (fn [db [_ option]]
    (-> @db (get-in [:static :valid-options option]) reaction)))
 
-(re-frame/register-sub
+(re-frame/reg-sub-raw
  :bucket-counts
  (fn [db]
    (-> @db
