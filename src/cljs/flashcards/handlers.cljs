@@ -3,7 +3,7 @@
   (:require
    [alandipert.storage-atom :refer [local-storage]]
    [flashcards.db :as db]
-   [flashcards.logic :refer [first-turn update-turn]]
+   [flashcards.logic :refer [first-turn reset-game update-turn]]
    [re-frame.core :as re-frame]))
 
 
@@ -35,6 +35,11 @@
      (if (= active-panel :play-panel)
        (first-turn db)
        db))))
+
+(re-frame/reg-event-db
+ :reset-game
+ (fn [db _]
+   (reset-game db)))
 
 (re-frame/reg-event-db
  :score-answer

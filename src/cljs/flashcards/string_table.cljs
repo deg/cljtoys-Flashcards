@@ -31,6 +31,7 @@
    :state             {:english "state"              :hebrew "מדינה"}
    :state-capitals    {:english "State capitals"     :hebrew "ערי בירה - מדינות ארה\"ב"}
    :prototype         {:english "Prototype"          :hebrew "אב טיפוס"}
+   :reset-game        {:english "Reset game"         :hebrew "אפס חפיסות"}
    :show-choices      {:english "Show choices"       :hebrew "אפשרויות"}
    :start-game        {:english "Start game"         :hebrew "התחל משחק"}
    :translation       {:english "translation"        :hebrew "תרגום"}

@@ -115,7 +115,8 @@
               [play-view/full-card]
               [re-com/h-box
                :gap "3rem"
-               :children [[link-to-home-page]
+               :children [[play-view/reset-game]
+                          [link-to-home-page]
                           [link-to-about-page]]]]])
 
 

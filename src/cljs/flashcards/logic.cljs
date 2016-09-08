@@ -95,6 +95,15 @@
     (dicts/persist-bucket dict-name new-item)
     (assoc-in db [:dynamic :bucketed-dictionary :words word-pos] new-item)))
 
+(defn reset-game [db]
+  (let [dict-name (get-in db [:dynamic :bucketed-dictionary :name])]
+    (update-in db [:dynamic :bucketed-dictionary :words]
+               (fn [words] (mapv #(let [new-item (assoc % ::turn/bucket 0)]
+                                   (dicts/persist-bucket dict-name new-item)
+                                   new-item)
+                                words)))))
+
+
 (defn update-turn [db players-answer]
   (if (not players-answer)
     (setup-turn db)

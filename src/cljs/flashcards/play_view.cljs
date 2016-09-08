@@ -136,3 +136,8 @@
                                    (reset! text %)
                                    (re-frame/dispatch [:score-answer % :allow-partial true]))])])]))
 
+(defn reset-game []
+  (let [ui (re-frame/subscribe [:ui-language])]
+    [re-com/box
+     :child [:a {:on-click #(re-frame/dispatch [:reset-game])}
+             (lstr @ui :reset-game)]]))
