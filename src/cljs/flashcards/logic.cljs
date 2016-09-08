@@ -23,9 +23,13 @@
       (assoc-in [:turn] (s/assert ::turn/turn nil))))
 
 (defn- get-word [db]
+  (prn "DEBUGGING get-word")
   (let [word-items (get-in db [:dynamic :bucketed-dictionary :words])
         num-active-buckets (get-in db [:dynamic :active-buckets])
         available (filter #(< (::turn/bucket %) num-active-buckets) word-items)]
+    (prn "AVAILABLE" available)
+    (prn "NUM-ACTIVE" num-active-buckets)
+    (prn "WORD-ITEMS" word-items)
     (when-not (zero? (count available))
       (rand-nth available))))
 
@@ -39,6 +43,8 @@
 
 ;; [TODO] Refactor "choice" to "word" or "word-item" soon
 (defn- turn-data [db correct-choice other-choices]
+  (prn "DEBUGGING turn-data")
+  (prn "CORRECT CHOICE:" correct-choice)
   (let [direction (get-in db [:options :direction])
         forward? (or (= direction :new-to-known)
                      (and (= direction :both) (zero? (rand-int 2))))
