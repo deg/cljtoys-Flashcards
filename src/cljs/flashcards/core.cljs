@@ -6,6 +6,7 @@
    [flashcards.handlers]
    [flashcards.routes :as routes]
    [flashcards.subs]
+   [flashcards.turn]
    [flashcards.views :as views]
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]))

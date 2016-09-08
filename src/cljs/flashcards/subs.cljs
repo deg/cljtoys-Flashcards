@@ -3,6 +3,7 @@
   (:require-macros
    [reagent.ratom :refer [reaction]])
   (:require
+   [flashcards.turn :as turn]
    [re-frame.core :as re-frame]))
 
 ;; [TODO] Move from reg-sub-raw to reg-sub once I can find the new re-frame docs
@@ -15,24 +16,24 @@
 
 (simple-sub :name [:static :name])
 (simple-sub :version [:static :version])
-(simple-sub :word [:turn :word])
-(simple-sub :translation-choices [:turn :translation-choices])
+(simple-sub ::turn/word [:turn ::turn/word])
+(simple-sub ::turn/translation-choices [:turn ::turn/translation-choices])
 (simple-sub :num-choices [:options :num-choices])
 (simple-sub :show-choices [:options :show-choices])
 (simple-sub :active-panel [:active-panel])
 (simple-sub :score [:dynamic :score])
 (simple-sub :active-buckets [:dynamic :active-buckets])
 (simple-sub :multiplier [:dynamic :multiplier])
-(simple-sub :prev-turn [:turn :prev-turn])
-(simple-sub :text [:turn :text])
-(simple-sub :bucket [:turn :correct-choice :bucket])
+(simple-sub ::turn/prev-turn [:turn ::turn/prev-turn])
+(simple-sub ::turn/text [:turn ::turn/text])
+(simple-sub ::turn/bucket [:turn ::turn/correct-choice ::turn/bucket])
 (simple-sub :ui-language [:options :ui-language])
 
 
 (re-frame/reg-sub-raw
- :translation-choice
+ ::turn/translation-choice
  (fn [db [_ n]]
-   (-> @db (get-in [:turn :translation-choices n]) reaction)))
+   (-> @db (get-in [:turn ::turn/translation-choices n]) reaction)))
 
 (re-frame/reg-sub-raw
  :option
@@ -48,9 +49,9 @@
  :bucket-counts
  (fn [db]
    (-> @db
-     (get-in [:dynamic :bucketed-dictionary :words])
-     ((partial map :bucket))
-     frequencies
-     sort
-     reaction)))
+       (get-in [:dynamic :bucketed-dictionary :words])
+       ((partial map ::turn/bucket))
+       frequencies
+       sort
+       reaction)))
 

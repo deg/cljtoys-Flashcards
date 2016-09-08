@@ -1,6 +1,7 @@
 (ns flashcards.db
   "Default app state"
   (:require
+   [cljs.spec :as s]
    [flashcards.dicts.dicts :as dicts]))
 
 (def default-db

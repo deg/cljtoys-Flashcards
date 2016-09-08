@@ -4,6 +4,7 @@
   (:require
    [flashcards.dicts.dicts :as dicts]
    [flashcards.string-table :refer [lstr]]
+   [flashcards.turn :as turn]
    [flashcards.utils :refer [arabic? hebrew?]]
    [goog.string :as gstring]
    [re-com.core :as re-com :refer-macros [handler-fn]]
@@ -29,7 +30,7 @@
   (let [ui (re-frame/subscribe [:ui-language])
         counts (re-frame/subscribe [:bucket-counts])
         num-buckets (re-frame/subscribe [:option :num-buckets])
-        current-bucket (re-frame/subscribe [:bucket])
+        current-bucket (re-frame/subscribe [::turn/bucket])
         active-buckets (re-frame/subscribe [:active-buckets])
         nbsp (gstring/unescapeEntities "&nbsp;")]
     [re-com/h-box
@@ -51,19 +52,19 @@
 
 (defn score-bar-latest-turn []
   (let [ui (re-frame/subscribe [:ui-language])
-        prev-turn (re-frame/subscribe [:prev-turn])
+        prev-turn (re-frame/subscribe [::turn/prev-turn])
         dict (re-frame/subscribe [:option :dictionary])]
     (re-com/h-box
      :justify :center
      :children [(when @prev-turn
-                  (let [{:keys [answered-word players-answer correct-answer other-choices]} @prev-turn
+                  (let [{:keys [answered-word players-answer correct-answer ::turn/other-choices]} @prev-turn
                         answer-type (:answer-type (dicts/get-dictionary @dict))]
                     (if  (= players-answer correct-answer)
                       (lstr @ui :correct-score)
-                      (let [forward? (:forward? @prev-turn)
+                      (let [forward? (::turn/forward? @prev-turn)
                             answer-type (lstr @ui answer-type)
-                            source (if forward? :word :translation)
-                            dest (if forward? :translation :word)
+                            source (if forward? ::turn/word ::turn/translation)
+                            dest (if forward? ::turn/translation ::turn/word)
                             word-for-players-answer (source (first (filter #(= (dest %) players-answer)
                                                                            other-choices)))
                             line1-format (if forward? :incorrect-score-forward :incorrect-score-reverse)
@@ -83,7 +84,7 @@
               [score-bar-latest-turn]]])
 
 (defn subject-word []
-  (let [word (re-frame/subscribe [:word])]
+  (let [word (re-frame/subscribe [::turn/word])]
     [re-com/h-box
      :class (str "subject-word" (when (arabic? @word)" arabic" ))
      :justify :center
@@ -91,7 +92,7 @@
      :children [@word]]))
 
 (defn card [n]
-  (let [translation (re-frame/subscribe [:translation-choice n])]
+  (let [translation (re-frame/subscribe [::turn/translation-choice n])]
     (fn [n]
       ;; [TODO] This could be MUCH more concise if I knew how to add/remove a single class
       (let [base-class (str (when (arabic? @translation) "arabic ") "fc-card")
@@ -119,9 +120,9 @@
 
 (defn full-card []
   (let [ui (re-frame/subscribe [:ui-language])
-        word (re-frame/subscribe [:word])
+        word (re-frame/subscribe [::turn/word])
         show-choices (re-frame/subscribe [:show-choices])
-        text (re-frame/subscribe [:text])]
+        text (re-frame/subscribe [::turn/text])]
     [re-com/v-box
      :class "fc-full-card"
      :children (if (not @word)

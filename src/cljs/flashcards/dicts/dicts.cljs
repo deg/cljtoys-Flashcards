@@ -3,7 +3,8 @@
    [alandipert.storage-atom :refer [local-storage]]
    [flashcards.dicts.arabic-basic :as arabic-basic]
    [flashcards.dicts.arabic-grade11 :as arabic-grade11]
-   [flashcards.dicts.state-capitals :as state-capitals]))
+   [flashcards.dicts.state-capitals :as state-capitals]
+   [flashcards.turn :as turn]))
 
 (def ^:private all-dictionaries
   {:arabic-basic arabic-basic/dict
@@ -22,7 +23,7 @@
     (get @store word 0)))
 
 (defn persist-bucket [dictionary-name word-item]
-  (swap! (bucket-atoms dictionary-name) assoc (:word word-item) (:bucket word-item))
+  (swap! (bucket-atoms dictionary-name) assoc (::turn/word word-item) (::turn/bucket word-item))
 )
 
 (defn commit-persistent-buckets []
@@ -35,9 +36,9 @@
   (let [name (:name dictionary)]
     (update dictionary :words
             #(mapv (fn [[word translation]]
-                     {:word word
-                      :translation translation
-                      :bucket (lookup-persisted-bucket name word)})
+                     {::turn/word word
+                      ::turn/translation translation
+                      ::turn/bucket (lookup-persisted-bucket name word)})
                    %))))
 
 (defn get-names []

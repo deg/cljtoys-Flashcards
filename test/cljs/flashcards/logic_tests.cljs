@@ -3,7 +3,8 @@
             [flashcards.db :refer [default-db]]
             [flashcards.dicts.dicts :as dicts]
             [flashcards.utils :as utils]
-            [flashcards.logic :as logic]))
+            [flashcards.logic :as logic]
+            [flashcards.turn :as turn]))
 
 (deftest startup
   (testing "initialize db"
@@ -17,28 +18,28 @@
         options (:options default-db)
         word-items (get-in db [:dynamic :bucketed-dictionary :words])
         turn (:turn db)
-        word (:word turn)
-        translation (:translation turn)]
+        word (::turn/word turn)
+        translation (::turn/translation turn)]
 
     (testing "Word in dictionary"
-      (is (some #{word} (map :word word-items))))
+      (is (some #{word} (map ::turn/word word-items))))
 
     (testing "Translation in dictionary"
-      (is (some #{translation} (map :translation word-items))))
+      (is (some #{translation} (map ::turn/translation word-items))))
 
     #_(testing "Translation in other language"
       (is (not= (utils/arabic? word) (utils/arabic? translation))))
 
     (testing "No prev-turn state at start of game"
-      (is (not (:prev-turn turn))))
+      (is (not (::turn/prev-turn turn))))
 
     (testing "Translation matches word"
       (is translation (get (into {} word-items) word)))
 
     (testing "Other (wrong) answers"
-      (let [answers (:translation-choices turn)]
+      (let [answers (::turn/translation-choices turn)]
         (doseq [answer answers]
-          (is (some #{answer} (map :translation word-items)))
+          (is (some #{answer} (map ::turn/translation word-items)))
           #_(testing "Different language than word"
             (is (not= (utils/arabic? word) (utils/arabic? answer))))
           (testing "Same language as translation"
@@ -78,7 +79,7 @@
         turn (:turn db)]
 
     (testing "No prev-turn state at start of game"
-      (is (not (:prev-turn turn))))))
+      (is (not (::turn/prev-turn turn))))))
 
 (deftest scores
   (let [expected "GOOD"
@@ -123,8 +124,8 @@
 
 (deftest update-board
   (let [db-before (logic/first-turn default-db)
-        expected (get-in db-before [:turn :translation])
-        wrong (some #(when (not= % expected) %) (get-in db-before [:turn :translation-choices]))]
+        expected (get-in db-before [:turn ::turn/translation])
+        wrong (some #(when (not= % expected) %) (get-in db-before [:turn ::turn/translation-choices]))]
 
     (testing "pre-conditions"
       (is (not= expected wrong)))
@@ -132,20 +133,20 @@
     (let [old-turn (:turn db-before)]
 
       (testing "right answer"
-        (let [db-after (logic/update-turn db-before expected)new-prev-turn
-              (get-in db-after [:turn :prev-turn])]
+        (let [db-after (logic/update-turn db-before expected)
+              new-prev-turn (get-in db-after [:turn ::turn/prev-turn])]
           (is (> (get-in db-after [:dynamic :score])
                  (get-in db-before [:dynamic :score])))
-          (is (= (:answered-word new-prev-turn) (:word old-turn)))
+          (is (= (:answered-word new-prev-turn) (::turn/word old-turn)))
           (is (= (:correct-answer new-prev-turn) expected))
           (is (= (:players-answer new-prev-turn) expected))))
 
       (testing "wrong answer"
         (let [db-after (logic/update-turn db-before wrong)
-              new-prev-turn (get-in db-after [:turn :prev-turn])]
+              new-prev-turn (get-in db-after [:turn ::turn/prev-turn])]
           (is (< (get-in db-after [:dynamic :score])
                  (get-in db-before [:dynamic :score])))
-          (is (= (:answered-word new-prev-turn) (:word old-turn)))
+          (is (= (:answered-word new-prev-turn) (::turn/word old-turn)))
           (is (= (:correct-answer new-prev-turn) expected))
           (is (= (:players-answer new-prev-turn) wrong)))))))
 
