@@ -2,7 +2,7 @@
   "Turn data structure"
   (:require [cljs.spec :as s]))
 
-(s/def ::word string?)
+(s/def ::word (s/nilable string?)) ;; [TODO] nilable because currently is nil if no words are in the chosen buckets. Clean up soon!
 (s/def ::boolean #(= % (boolean %)))
 (s/def ::direction #{:forward :reverse})
 
