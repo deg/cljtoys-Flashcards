@@ -65,7 +65,7 @@
 (defn first-turn [db]
   (-> db init-game setup-turn))
 
-(defn turn-points [& {:keys [players-answer correct-answer options]}]
+(defn turn-points [& {:keys [::turn/players-answer ::turn/correct-answer options]}]
   (let [base-wrong -10
         base-right 10
         free-text? (= :free-text (:show-choices options))
@@ -109,15 +109,15 @@
     (setup-turn db)
     (let [answered-word (get-in db [:turn ::turn/word])
           correct-answer (get-in db [:turn ::turn/translation])
-          points (turn-points :players-answer players-answer
-                              :correct-answer correct-answer
+          points (turn-points ::turn/players-answer players-answer
+                              ::turn/correct-answer correct-answer
                               :options (:options db))
           new-score (+ (int points) (get-in db [:dynamic :score]))]
       (-> db
           (assoc-in [:turn ::turn/prev-turn]
-                    {:answered-word answered-word,
-                     :players-answer players-answer,
-                     :correct-answer correct-answer
+                    {::turn/answered-word answered-word,
+                     ::turn/players-answer players-answer,
+                     ::turn/correct-answer correct-answer
                      ::turn/other-choices (get-in db [:turn ::turn/other-choices])
                      ::turn/forward? (get-in db [:turn ::turn/forward?])})
           (assoc-in [:dynamic :score] new-score)

@@ -8,7 +8,11 @@
 
 (s/def ::choice (s/keys :req [::word ::translation ::bucket]))
 
-;(s/def ::prev-turn (s/nilable s/any)) ;; TEMP
+(s/def ::prev-turn (s/keys :req [::answered-word
+                                 ::players-answer
+                                 ::correct-answer
+                                 ::other-choices
+                                 ::forward?]))
 
 (s/def ::turn (s/nilable
                (s/keys :req [::word

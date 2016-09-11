@@ -57,7 +57,7 @@
     (re-com/h-box
      :justify :center
      :children [(when @prev-turn
-                  (let [{:keys [answered-word players-answer correct-answer ::turn/other-choices]} @prev-turn
+                  (let [#::turn{:keys [answered-word players-answer correct-answer other-choices]} @prev-turn
                         answer-type (:answer-type (dicts/get-dictionary @dict))]
                     (if  (= players-answer correct-answer)
                       (lstr @ui :correct-score)

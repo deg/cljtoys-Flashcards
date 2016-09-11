@@ -87,8 +87,8 @@
         valids (get-in default-db [:static :valid-options])
         options (:options default-db)
         checker (fn [answer options]
-                  (logic/turn-points :correct-answer expected
-                                     :players-answer answer
+                  (logic/turn-points ::turn/correct-answer expected
+                                     ::turn/players-answer answer
                                      :options options))]
     (doseq [direction (:direction valids)
             num-choices (:num-choices valids)
@@ -137,16 +137,16 @@
               new-prev-turn (get-in db-after [:turn ::turn/prev-turn])]
           (is (> (get-in db-after [:dynamic :score])
                  (get-in db-before [:dynamic :score])))
-          (is (= (:answered-word new-prev-turn) (::turn/word old-turn)))
-          (is (= (:correct-answer new-prev-turn) expected))
-          (is (= (:players-answer new-prev-turn) expected))))
+          (is (= (::turn/answered-word new-prev-turn) (::turn/word old-turn)))
+          (is (= (::turn/correct-answer new-prev-turn) expected))
+          (is (= (::turn/players-answer new-prev-turn) expected))))
 
       (testing "wrong answer"
         (let [db-after (logic/update-turn db-before wrong)
               new-prev-turn (get-in db-after [:turn ::turn/prev-turn])]
           (is (< (get-in db-after [:dynamic :score])
                  (get-in db-before [:dynamic :score])))
-          (is (= (:answered-word new-prev-turn) (::turn/word old-turn)))
-          (is (= (:correct-answer new-prev-turn) expected))
-          (is (= (:players-answer new-prev-turn) wrong)))))))
+          (is (= (::turn/answered-word new-prev-turn) (::turn/word old-turn)))
+          (is (= (::turn/correct-answer new-prev-turn) expected))
+          (is (= (::turn/players-answer new-prev-turn) wrong)))))))
 
