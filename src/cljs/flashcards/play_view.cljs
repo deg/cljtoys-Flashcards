@@ -139,5 +139,7 @@
 (defn reset-game []
   (let [ui (re-frame/subscribe [:ui-language])]
     [re-com/box
-     :child [:a {:on-click #(re-frame/dispatch [:reset-game])}
+     :child [:a
+             {:class "psuedo-link"
+              :on-click #(re-frame/dispatch [:reset-game])}
              (lstr @ui :reset-game)]]))

@@ -55,4 +55,7 @@
 
     [:.ltr-span
      {:direction "ltr"
-      :display "inline-block"}]))
+      :display "inline-block"}]
+
+    [:.psuedo-link
+     {:cursor "pointer"}]))
