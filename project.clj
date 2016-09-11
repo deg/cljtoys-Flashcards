@@ -1,7 +1,5 @@
 (defproject flashcards "0.1.0-SNAPSHOT"
-  :dependencies [;[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojure "1.9.0-alpha11"]
-                 ;[org.clojure/clojurescript "1.8.51"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha12"]
                  [org.clojure/clojurescript "1.9.229"]
                  [org.clojure/core.incubator "0.1.4"]
                  [reagent "0.6.0-rc"]
@@ -42,9 +40,9 @@
 
   :profiles
   {:dev
-   {:dependencies [
-                   [figwheel-sidecar "0.5.6"]
-                   [com.cemerick/piggieback "0.2.1"]]
+   {:dependencies [[figwheel-sidecar "0.5.6"]
+                   [com.cemerick/piggieback "0.2.1"]
+                   [org.clojure/test.check "0.9.0"]]
 
     :plugins      [[lein-figwheel "0.5.6"]
                    [lein-doo "0.1.6"]
