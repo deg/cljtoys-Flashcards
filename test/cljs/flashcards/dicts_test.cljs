@@ -1,6 +1,6 @@
 (ns flashcards.dicts-test
   (:require [cljs.test :refer-macros [deftest testing is]]
-            [flashcards.db :refer [default-db]]
+            [flashcards.db :as DB :refer [default-db]]
             [flashcards.dicts.dicts :as dicts]
             [flashcards.dicts.state-capitals :as state-capitals]
             [flashcards.turn :as turn]))
@@ -9,7 +9,7 @@
 (deftest init-dictionary
   (testing "states"
     (let [dictionary (dicts/init-dictionary state-capitals/dict)
-          max-buckets (get-in default-db [:options :num-buckets])]
+          max-buckets (get-in default-db [::DB/options :num-buckets])]
       (testing "valid dictionary"
         (is dictionary)
         (is (:name dictionary))

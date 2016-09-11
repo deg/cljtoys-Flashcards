@@ -57,7 +57,7 @@
     (re-com/h-box
      :justify :center
      :children [(when @prev-turn
-                  (let [#::turn{:keys [answered-word players-answer correct-answer other-choices]} @prev-turn
+                  (let [#::turn{:keys [word players-answer correct-answer other-choices]} @prev-turn
                         answer-type (:answer-type (dicts/get-dictionary @dict))]
                     (if  (= players-answer correct-answer)
                       (lstr @ui :correct-score)
@@ -72,7 +72,7 @@
                         [re-com/v-box
                          :children (mapv (fn [line-format] [re-com/box
                                                             :child ((lstr @ui line-format)
-                                                                    answer-type answered-word correct-answer
+                                                                    answer-type word correct-answer
                                                                     players-answer word-for-players-answer)])
                                          [line1-format line2-format])]))))])))
 

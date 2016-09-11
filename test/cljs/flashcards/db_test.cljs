@@ -1,28 +1,28 @@
 (ns flashcards.db-test
   (:require [cljs.test :refer-macros [deftest testing is]]
-            [flashcards.db :as db]
+            [flashcards.db :as DB]
             [flashcards.dicts.dicts :as dicts]
             [clojure.set :as set]))
 
-(let [the-db db/default-db]
+(let [the-db DB/default-db]
 
   (deftest check-default-db
     (testing "has db"
       (is the-db)
-      (is (:static the-db))
-      (is (:options the-db))
-      (is (:dynamic the-db))))
+      (is (::DB/static the-db))
+      (is (::DB/options the-db))
+      (is (::DB/dynamic the-db))))
 
   (deftest check-db-version
-    (is (get-in the-db [:static :name]))
-    (let [version (get-in the-db [:static :version])]
+    (is (get-in the-db [::DB/static :name]))
+    (let [version (get-in the-db [::DB/static :version])]
       (is version)
       (is (re-matches #"\d+\.\d+\.\d+" version))))
 
   (deftest check-db-options
     (let [known-options [:dictionary :direction :num-choices :show-choices :ui-language :num-buckets]
-          options (get-in the-db [:options])
-          valid-options (get-in the-db [:static :valid-options])]
+          options (get-in the-db [::DB/options])
+          valid-options (get-in the-db [::DB/static :valid-options])]
       (testing "has options"
         (is options)
         (is valid-options))
@@ -56,6 +56,6 @@
         (let [buckets (:num-buckets dict)]
           (is (integer? buckets))
           (is (>= buckets 1))
-          (is (<= buckets (get-in the-db [:options :num-buckets])))))
+          (is (<= buckets (get-in the-db [::DB/options :num-buckets])))))
       (testing "big enough"
-        (is (> (count (:words dict)) (get-in the-db [:options :num-choices])))) )))
+        (is (> (count (:words dict)) (get-in the-db [::DB/options :num-choices])))) )))
