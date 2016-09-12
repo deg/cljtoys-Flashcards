@@ -63,8 +63,8 @@
                       (lstr @ui :correct-score)
                       (let [forward? (::turn/forward? @prev-turn)
                             answer-type (lstr @ui answer-type)
-                            source (if forward? ::turn/word ::turn/translation)
-                            dest (if forward? ::turn/translation ::turn/word)
+                            source (if forward? ::turn/word ::turn/correct-answer)
+                            dest (if forward? ::turn/correct-answer ::turn/word)
                             word-for-players-answer (source (first (filter #(= (dest %) players-answer)
                                                                            other-choices)))
                             line1-format (if forward? :incorrect-score-forward :incorrect-score-reverse)
@@ -92,21 +92,21 @@
      :children [@word]]))
 
 (defn card [n]
-  (let [translation (re-frame/subscribe [::turn/translation-choice n])]
+  (let [this-answer (re-frame/subscribe [::turn/all-answers n])]
     (fn [n]
       ;; [TODO] This could be MUCH more concise if I knew how to add/remove a single class
-      (let [base-class (str (when (arabic? @translation) "arabic ") "fc-card")
+      (let [base-class (str (when (arabic? @this-answer) "arabic ") "fc-card")
             pressed-class (str "pressed " base-class)
             unpressed-class (str "unpressed " base-class)]
         [re-com/hyperlink
          :class unpressed-class
-         :on-click #(re-frame/dispatch [:score-answer @translation :allow-partial false])
+         :on-click #(re-frame/dispatch [:score-answer @this-answer :allow-partial false])
          ;; [TODO] This pressed/unpressed nonsense is here because I couldn't get
          ;; buttons or links to behave right otherwise on touch screens. In all
          ;; other attempts, the button would remain highlighted after being acted upon.
          :attr  {:on-mouse-down #(set! (.-className (.-target %)) pressed-class)
                  :on-mouse-up #(set! (.-className (.-target %)) unpressed-class)}
-         :label @translation]))))
+         :label @this-answer]))))
 
 (defn answer-cards []
   (let [num-choices (re-frame/subscribe [:num-choices])]

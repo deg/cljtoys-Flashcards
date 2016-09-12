@@ -35,9 +35,9 @@
 (defn- init-dictionary [dictionary]
   (let [name (:name dictionary)]
     (update dictionary :words
-            #(mapv (fn [[word translation]]
+            #(mapv (fn [[word answer]]
                      {::turn/word word
-                      ::turn/translation translation
+                      ::turn/answer answer
                       ::turn/bucket (lookup-persisted-bucket name word)})
                    %))))
 

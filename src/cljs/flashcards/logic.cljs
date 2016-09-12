@@ -12,22 +12,11 @@
 
 (s/check-asserts true)
 
+(defn check-db [db]
+  (s/assert ::DB/db db))
+
 ;;; [TODO] Several of these functions still generate random state. All randomness should
 ;;; come in via the parameters, to be explicit and controllable by the testing harness.
-
-(declare setup-turn)
-
-(defn- init-game [db]
-  (-> db
-      (assoc-in [::DB/dynamic :score] 0)
-      (assoc-in [::DB/dynamic :multiplier] 1)
-      (assoc-in [::DB/dynamic :bucketed-dictionary]
-                (-> db (get-in [::DB/options :dictionary]) dicts/get-dictionary dicts/init-dictionary))
-      (assoc-in [::DB/dynamic :active-buckets] (inc (rand-int (get-in db [::DB/options :num-buckets]))))
-      setup-turn))
-
-(s/fdef init-game
-        :args #(::DB/db (:db %)))
 
 (defn- get-word-item [db]
   (let [word-items (get-in db [::DB/dynamic :bucketed-dictionary :words])
@@ -53,28 +42,37 @@
   (let [direction (get-in db [::DB/options :direction])
         forward? (or (= direction :new-to-known)
                      (and (= direction :both) (zero? (rand-int 2))))
-        word ((if forward? ::turn/word ::turn/translation) correct-word-item)
-        translation ((if forward? ::turn/translation ::turn/word) correct-word-item)
-        other-translations (map (if forward? ::turn/translation ::turn/word) other-word-items)
-        translation-choices (shuffle (conj other-translations translation))]
+        word ((if forward? ::turn/word ::turn/answer) correct-word-item)
+        correct-answer ((if forward? ::turn/answer ::turn/word) correct-word-item)
+        other-answers (map (if forward? ::turn/answer ::turn/word) other-word-items)
+        all-answers (shuffle (conj other-answers correct-answer))]
     {::turn/word word
      ::turn/correct-word-item correct-word-item
      ::turn/other-word-items other-word-items
-     ::turn/translation translation
+     ::turn/correct-answer correct-answer
      ::turn/forward? forward?
-     ::turn/translation-choices translation-choices}))
+     ::turn/all-answers all-answers}))
 
 (defn- setup-turn [db]
   (let [correct-word-item (get-word-item db)
         other-word-items (get-other-word-items db correct-word-item)]
-    (assoc db ::turn/turn
-           (s/assert ::turn/turn
-                      (merge (::turn/turn db)
-                             {::turn/text ""}
-                             (turn-data db correct-word-item other-word-items))))))
+    (check-db db)
+    (check-db (assoc db ::turn/turn
+                     (merge (::turn/turn db)
+                            {::turn/text ""}
+                            (turn-data db correct-word-item other-word-items))))))
 
 (defn first-turn [db]
-  (-> db init-game setup-turn))
+  (-> db
+      ;check-db
+      (assoc-in [::DB/dynamic :score] 0)
+      (assoc-in [::DB/dynamic :multiplier] 1)
+      (assoc-in [::DB/dynamic :bucketed-dictionary]
+                (-> db (get-in [::DB/options :dictionary]) dicts/get-dictionary dicts/init-dictionary))
+      (assoc-in [::DB/dynamic :active-buckets] (inc (rand-int (get-in db [::DB/options :num-buckets]))))
+      (assoc ::turn/turn nil)
+      setup-turn
+      check-db))
 
 (defn turn-points [& {:keys [::turn/players-answer ::turn/correct-answer ::DB/options]}]
   (let [base-wrong -10
@@ -116,10 +114,11 @@
 
 
 (defn update-turn [db players-answer]
+  (check-db db)
   (if (not players-answer)
     (setup-turn db)
     (let [word (get-in db [::turn/turn ::turn/word])
-          correct-answer (get-in db [::turn/turn ::turn/translation])
+          correct-answer (get-in db [::turn/turn ::turn/correct-answer])
           points (turn-points ::turn/players-answer players-answer
                               ::turn/correct-answer correct-answer
                               ::DB/options (::DB/options db))

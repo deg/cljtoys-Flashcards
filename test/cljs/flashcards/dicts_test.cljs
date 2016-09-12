@@ -17,7 +17,7 @@
       (testing "words"
         (doseq [word-data (:words dictionary)]
           (is (::turn/word word-data))
-          (is (::turn/translation word-data))
+          (is (::turn/answer word-data))
           (let [bucket (::turn/bucket word-data)]
             (is (integer? bucket))
             (is (<= 0 bucket))

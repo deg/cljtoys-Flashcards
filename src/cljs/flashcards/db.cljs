@@ -10,10 +10,9 @@
 (s/check-asserts true)
 
 ;; [TODO] Fill in
-(s/def ::static any? #_(s/keys :req [::name ::version ::valid-options]))
-(s/def ::options any?)
-(s/def ::dynamic any?)
-(s/def ::turn (s/nilable ::turn/turn))
+(s/def ::static map? #_(s/keys :req [::name ::version ::valid-options]))
+(s/def ::options map?)
+(s/def ::dynamic map?)
 
 (s/def ::db (s/keys :req [::static ::options ::dynamic] :opt [::turn/turn]))
 

@@ -18,7 +18,6 @@
 (simple-sub :name [::DB/static :name])
 (simple-sub :version [:DB/static :version])
 (simple-sub ::turn/word [::turn/turn ::turn/word])
-(simple-sub ::turn/translation-choices [::turn/turn ::turn/translation-choices])
 (simple-sub :num-choices [::DB/options :num-choices])
 (simple-sub :show-choices [::DB/options :show-choices])
 (simple-sub :active-panel [:active-panel])
@@ -31,10 +30,11 @@
 (simple-sub :ui-language [::DB/options :ui-language])
 
 
+;(simple-sub ::turn/all-answers [::turn/turn ::turn/all-answers])
 (re-frame/reg-sub-raw
- ::turn/translation-choice
+ ::turn/all-answers
  (fn [db [_ n]]
-   (-> @db (get-in [::turn/turn ::turn/translation-choices n]) reaction)))
+   (-> @db (get-in [::turn/turn ::turn/all-answers n]) reaction)))
 
 (re-frame/reg-sub-raw
  :option
@@ -44,7 +44,7 @@
 (re-frame/reg-sub-raw
  :valid-options
  (fn [db [_ option]]
-   (-> @db (get-in [:DB/static :valid-options option]) reaction)))
+   (-> @db (get-in [::DB/static :valid-options option]) reaction)))
 
 (re-frame/reg-sub-raw
  :bucket-counts

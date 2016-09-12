@@ -9,7 +9,8 @@
 
 (deftest startup
   (testing "initialize db"
-    (let [initialized (logic/init-game default-db)]
+    (let [initialized (logic/first-turn default-db)]
+      ()
       (is (= (get-in initialized [::DB/dynamic :score]) 0))
       (is (= (get-in initialized [::DB/dynamic :multiplier]) 1))
       (let [turn (get-in initialized [::turn/turn])]
@@ -21,37 +22,30 @@
         word-items (get-in db [::DB/dynamic :bucketed-dictionary :words])
         turn (::turn/turn db)
         word (::turn/word turn)
-        translation (::turn/translation turn)]
+        correct-answer (::turn/correct-answer turn)]
 
     (testing "Word in dictionary"
       (is (some #{word} (map ::turn/word word-items))))
 
-    (testing "Translation in dictionary"
-      (is (some #{translation} (map ::turn/translation word-items))))
-
-    #_(testing "Translation in other language"
-      (is (not= (utils/arabic? word) (utils/arabic? translation))))
+    (testing "Answer in dictionary"
+      (is (some #{correct-answer} (map ::turn/answer word-items))))
 
     (testing "No prev-turn state at start of game"
       (is (not (::turn/prev-turn turn))))
 
-    (testing "Translation matches word"
-      (is translation (get (into {} word-items) word)))
+    (testing "Correct answer matches word"
+      (is correct-answer (get (into {} word-items) word)))
 
     (testing "Other (wrong) answers"
-      (let [answers (::turn/translation-choices turn)]
+      (let [answers (::turn/all-answers turn)]
         (doseq [answer answers]
-          (is (some #{answer} (map ::turn/translation word-items)))
-          #_(testing "Different language than word"
-            (is (not= (utils/arabic? word) (utils/arabic? answer))))
-          (testing "Same language as translation"
-            (is (= (utils/arabic? translation) (utils/arabic? answer)))))
+          (is (some #{answer} (map ::turn/answer word-items))))
         (testing "Correct number of answers"
           (is (= (count answers) (:num-choices options))))
         (testing "No duplicate answers"
           (is (= (count (distinct answers)) (:num-choices options))))
         (testing "Includes correct answer"
-          (is (some #{translation} answers)))))
+          (is (some #{correct-answer} answers)))))
 
     (testing "buckets"
       (let [dictionary (get-in db [::DB/options :dictionary])
@@ -60,12 +54,10 @@
         (testing "structure"
           (is (= (count bucketed)
                  (count (-> dictionary dicts/get-dictionary :words)))))
-        (doseq [{:keys [word translation bucket]} bucketed]
+        (doseq [{:keys [word answer bucket]} bucketed]
           (testing word
             (is (>= bucket 0))
-            (is (< bucket max-buckets))
-            #_(is (not= (utils/arabic? word) (utils/arabic? translation)))
-            #_(is (or (utils/arabic? word) (utils/arabic? translation)))))))
+            (is (< bucket max-buckets))))))
 
     (testing "active buckets"
       (let [active-buckets (get-in db [::DB/dynamic :active-buckets])]
@@ -76,7 +68,7 @@
 (deftest second-game
   (let [db (-> default-db
                logic/first-turn
-               (#(logic/update-turn % (get-in % [::turn/turn :translation])))
+               (#(logic/update-turn % (get-in % [::turn/turn ::turn/correct-answer])))
                logic/first-turn)
         turn (::turn/turn db)]
 
@@ -126,8 +118,8 @@
 
 (deftest update-board
   (let [db-before (logic/first-turn default-db)
-        expected (get-in db-before [::turn/turn ::turn/translation])
-        wrong (some #(when (not= % expected) %) (get-in db-before [::turn/turn ::turn/translation-choices]))]
+        expected (get-in db-before [::turn/turn ::turn/correct-answer])
+        wrong (some #(when (not= % expected) %) (get-in db-before [::turn/turn ::turn/all-answers]))]
 
     (testing "pre-conditions"
       (is (not= expected wrong)))
