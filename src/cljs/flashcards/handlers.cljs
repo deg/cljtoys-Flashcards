@@ -33,7 +33,7 @@
 (re-frame/reg-event-db
  :set-active-panel
  (fn [db [_ active-panel]]
-   (let [db (assoc db :active-panel active-panel)]
+   (let [db (assoc db ::DB/active-panel active-panel)]
      (if (= active-panel :play-panel)
        (first-turn db)
        db))))

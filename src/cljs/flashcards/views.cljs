@@ -148,7 +148,7 @@
 
 (defn main-panel []
   (let [ui (re-frame/subscribe [::DB/ui-language])
-        active-panel (re-frame/subscribe [:active-panel])]
+        active-panel (re-frame/subscribe [::DB/active-panel])]
     (fn []
       [re-com/v-box
        :attr {:dir (if (= @ui :english) "ltr" "rtl")}

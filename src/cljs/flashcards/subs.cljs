@@ -20,7 +20,7 @@
 (simple-sub ::turn/word [::turn/turn ::turn/word])
 (simple-sub ::DB/num-choices [::DB/options ::DB/num-choices])
 (simple-sub :show-choices [::DB/options ::DB/show-choices])
-(simple-sub :active-panel [:active-panel])
+(simple-sub ::DB/active-panel [::DB/active-panel])
 (simple-sub ::DB/score [::DB/dynamic ::DB/score])
 (simple-sub ::DB/active-buckets [::DB/dynamic ::DB/active-buckets])
 (simple-sub ::DB/multiplier [::DB/dynamic ::DB/multiplier])
