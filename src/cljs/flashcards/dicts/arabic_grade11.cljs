@@ -1,11 +1,12 @@
-(ns flashcards.dicts.arabic-grade11)
+(ns flashcards.dicts.arabic-grade11
+  (:require [flashcards.db :as DB]))
 
 (def dict
   {:name :11th-grade-arabic
    :from-language :arabic
    :to-language :hebrew
    :answer-type :translation
-   :num-buckets 5
+   ::DB/num-buckets 5
    :words {"إتّجه"	"פנה, שם פניו אל",
            "إتّجاه"	"כיוון",
            "إتّخذ"	"נקט, קיבל החלטה",

@@ -1,11 +1,12 @@
-(ns flashcards.dicts.arabic-basic)
+(ns flashcards.dicts.arabic-basic
+  (:require [flashcards.db :as DB]))
 
 (def dict
   {:name :basic-arabic
    :from-language :arabic
    :to-language :english
    :answer-type :translation
-   :num-buckets 3
+   ::DB/num-buckets 3
    :words {"من" "of"
            "و" "and"
            "إلى" "to"

@@ -71,7 +71,7 @@
       (strint/<< "~{word-for-players-answer} is the ~{answer-type} of ~{players-answer}."))
     :hebrew
     (fn [answer-type word correct-answer players-answer word-for-players-answer]
-      (strint/<< "~{word-for-players-answer} היא ה ~{answer-type} של ~{players-answer}."))}
+      (strint/<< "~{word-for-players-answer} היא ה~{answer-type} של ~{players-answer}."))}
 
    })
 		
@@ -83,7 +83,8 @@
     (number? key) key
 
     :else
-    (or (get-in string-table [key language]) key)))
+    (let [key-sans-namespace (-> key name keyword)]
+      (or (get-in string-table [key-sans-namespace language]) key))))
 
 
 

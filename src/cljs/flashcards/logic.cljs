@@ -20,7 +20,7 @@
 
 (defn- get-word-item [db]
   (let [word-items (get-in db [::DB/dynamic :bucketed-dictionary :words])
-        num-active-buckets (get-in db [::DB/dynamic :active-buckets])
+        num-active-buckets (get-in db [::DB/dynamic ::DB/active-buckets])
         available (filter #(< (::turn/bucket %) num-active-buckets) word-items)]
     (when-not (zero? (count available))
       (rand-nth available))))
@@ -31,15 +31,14 @@
 
 (defn- get-other-word-items [db correct-word-item]
   (let [word-items (get-in db [::DB/dynamic :bucketed-dictionary :words])
-        num-needed (dec (get-in db [::DB/options :num-choices]))]
+        num-needed (dec (get-in db [::DB/options ::DB/num-choices]))]
     (->> word-items
          shuffle
          (remove #(= % correct-word-item))
          (take num-needed))))
 
-;; [TODO] Refactor "choice" to "word" or "word-item" soon
 (defn- turn-data [db correct-word-item other-word-items]
-  (let [direction (get-in db [::DB/options :direction])
+  (let [direction (get-in db [::DB/options ::DB/direction])
         forward? (or (= direction :new-to-known)
                      (and (= direction :both) (zero? (rand-int 2))))
         word ((if forward? ::turn/word ::turn/answer) correct-word-item)
@@ -65,11 +64,11 @@
 (defn first-turn [db]
   (-> db
       ;check-db
-      (assoc-in [::DB/dynamic :score] 0)
-      (assoc-in [::DB/dynamic :multiplier] 1)
+      (assoc-in [::DB/dynamic ::DB/score] 0)
+      (assoc-in [::DB/dynamic ::DB/multiplier] 1)
       (assoc-in [::DB/dynamic :bucketed-dictionary]
-                (-> db (get-in [::DB/options :dictionary]) dicts/get-dictionary dicts/init-dictionary))
-      (assoc-in [::DB/dynamic :active-buckets] (inc (rand-int (get-in db [::DB/options :num-buckets]))))
+                (-> db (get-in [::DB/options ::DB/dictionary]) dicts/get-dictionary dicts/init-dictionary))
+      (assoc-in [::DB/dynamic ::DB/active-buckets] (inc (rand-int (get-in db [::DB/options ::DB/num-buckets]))))
       (assoc ::turn/turn nil)
       setup-turn
       check-db))
@@ -78,9 +77,9 @@
   (let [base-wrong -10
         base-right 10
         free-text? (= :free-text (:show-choices options))
-        num-choices (:num-choices options)
+        num-choices (::DB/num-choices options)
         choices-multiplier (if (< num-choices 5) 1.0 (- num-choices 3.5))
-        direction-multiplier (case (:direction options)
+        direction-multiplier (case (::DB/direction options)
                                :new-to-known 1.0
                                :known-to-new 1.6
                                :both 2.0)]
@@ -92,7 +91,7 @@
   (max (dec bucket) 0))
 
 (defn- next-bucket [db bucket]
-  (let [num-buckets (get-in db [::DB/options :num-buckets])]
+  (let [num-buckets (get-in db [::DB/options ::DB/num-buckets])]
     (min (inc bucket) (dec num-buckets))))
 
 (defn update-word-score [db word-item correct?]
@@ -122,7 +121,7 @@
           points (turn-points ::turn/players-answer players-answer
                               ::turn/correct-answer correct-answer
                               ::DB/options (::DB/options db))
-          new-score (+ (int points) (get-in db [::DB/dynamic :score]))]
+          new-score (+ (int points) (get-in db [::DB/dynamic ::DB/score]))]
       (-> db
           (assoc-in [::turn/turn ::turn/prev-turn]
                     {::turn/word word,
@@ -130,7 +129,7 @@
                      ::turn/correct-answer correct-answer
                      ::turn/other-word-items (get-in db [::turn/turn ::turn/other-word-items])
                      ::turn/forward? (get-in db [::turn/turn ::turn/forward?])})
-          (assoc-in [::DB/dynamic :score] new-score)
+          (assoc-in [::DB/dynamic ::DB/score] new-score)
           (update-word-score (get-in db [::turn/turn ::turn/correct-word-item]) (= players-answer correct-answer))
           setup-turn))))
 

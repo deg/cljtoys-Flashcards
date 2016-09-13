@@ -2,39 +2,24 @@
   "Default app state"
   (:require
    [cljs.spec :as s]
-   [flashcards.dicts.dicts :as dicts]
    [flashcards.turn :as turn]
    ))
 
 
 (s/check-asserts true)
 
-;; [TODO] Fill in
-(s/def ::static map? #_(s/keys :req [::name ::version ::valid-options]))
-(s/def ::options map?)
-(s/def ::dynamic map?)
-
 (s/def ::db (s/keys :req [::static ::options ::dynamic] :opt [::turn/turn]))
 
-(def default-db
-  (s/assert ::db
-            {::static {:name :flashcards
-                       :version "0.0.1"
-                       :valid-options {:dictionary (into [] (dicts/get-names))
-                                       :direction [:new-to-known :known-to-new :both]
-                                       :show-choices [:multiple-choice :free-text]
-                                       :num-choices (range 2 13)
-                                       :ui-language [:english :hebrew]
-                                       :num-buckets (range 3 10)}}
-             ::options {:dictionary :arabic-grade11
-                        :ui-language :english
-                        :direction :new-to-known
-                        :num-choices 4
-                        :show-choices :multiple-choice
-                        :num-buckets 5
-                        }
-             ::dynamic {:score 0
-                        :multiplier 1
-                        :bucketed-dictionary {}
-                        }}))
+(s/def ::static (s/keys :req [::name ::version ::valid-options]))
+(s/def ::options (s/keys :req [::dictionary ::ui-language ::direction ::num-choices ::show-choices ::num-buckets]))
+(s/def ::dynamic (s/keys :req [::score ::multiplier ::bucketed-dictionary]))
+
+(s/def ::name keyword?)
+(s/def ::version string?)
+(s/def ::valid-options ::options)
+
+(s/def ::score int?)
+(s/def ::multiplier int?)
+(s/def ::bucketed-dictionary (s/coll-of ::turn/word-item))
+
 

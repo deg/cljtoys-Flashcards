@@ -1,11 +1,12 @@
-(ns flashcards.dicts.state-capitals)
+(ns flashcards.dicts.state-capitals
+  (:require [flashcards.db :as DB]))
 
 (def dict
   {:name :state-capitals
    :from-language :state
    :to-language :capital
    :answer-type :capital
-   :num-buckets 3
+   ::DB/num-buckets 3
    :words {"Alabama"	"Montgomery"
            "Alaska"	"Juneau"
            "Arizona"	"Phoenix"

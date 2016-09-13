@@ -1,7 +1,8 @@
 (ns flashcards.logic-test
   (:require [cljs.spec :as s]
             [cljs.test :refer-macros [deftest testing is]]
-            [flashcards.db :as DB :refer [default-db]]
+            [flashcards.db :as DB]
+            [flashcards.db-config :refer [default-db]]
             [flashcards.dicts.dicts :as dicts]
             [flashcards.utils :as utils]
             [flashcards.logic :as logic]
@@ -11,8 +12,8 @@
   (testing "initialize db"
     (let [initialized (logic/first-turn default-db)]
       ()
-      (is (= (get-in initialized [::DB/dynamic :score]) 0))
-      (is (= (get-in initialized [::DB/dynamic :multiplier]) 1))
+      (is (= (get-in initialized [::DB/dynamic ::DB/score]) 0))
+      (is (= (get-in initialized [::DB/dynamic ::DB/multiplier]) 1))
       (let [turn (get-in initialized [::turn/turn])]
         (is (= turn (s/conform ::turn/turn turn)))))))
 
@@ -41,16 +42,16 @@
         (doseq [answer answers]
           (is (some #{answer} (map ::turn/answer word-items))))
         (testing "Correct number of answers"
-          (is (= (count answers) (:num-choices options))))
+          (is (= (count answers) (::DB/num-choices options))))
         (testing "No duplicate answers"
-          (is (= (count (distinct answers)) (:num-choices options))))
+          (is (= (count (distinct answers)) (::DB/num-choices options))))
         (testing "Includes correct answer"
           (is (some #{correct-answer} answers)))))
 
     (testing "buckets"
-      (let [dictionary (get-in db [::DB/options :dictionary])
+      (let [dictionary (get-in db [::DB/options ::DB/dictionary])
             bucketed (get-in db [::DB/dynamic :bucketed-dictionary :words])
-            max-buckets (get-in db [::DB/options :num-buckets])]
+            max-buckets (get-in db [::DB/options ::DB/num-buckets])]
         (testing "structure"
           (is (= (count bucketed)
                  (count (-> dictionary dicts/get-dictionary :words)))))
@@ -60,10 +61,10 @@
             (is (< bucket max-buckets))))))
 
     (testing "active buckets"
-      (let [active-buckets (get-in db [::DB/dynamic :active-buckets])]
+      (let [active-buckets (get-in db [::DB/dynamic ::DB/active-buckets])]
         (is (integer? active-buckets))
         (is (< 0 active-buckets))
-        (is (<= active-buckets (get-in db [::DB/options :num-buckets])))))))
+        (is (<= active-buckets (get-in db [::DB/options ::DB/num-buckets])))))))
 
 (deftest second-game
   (let [db (-> default-db
@@ -78,18 +79,18 @@
 (deftest scores
   (let [expected "GOOD"
         wrong "BAD"
-        valids (get-in default-db [::DB/static :valid-options])
+        valids (get-in default-db [::DB/static ::DB/valid-options])
         options (::DB/options default-db)
         checker (fn [answer options]
                   (logic/turn-points ::turn/correct-answer expected
                                      ::turn/players-answer answer
                                      ::DB/options options))]
-    (doseq [direction (:direction valids)
-            num-choices (:num-choices valids)
+    (doseq [direction (::DB/direction valids)
+            num-choices (::DB/num-choices valids)
             show-choices (:show-choices valids)
             :let [these-options (assoc options
-                                       :direction direction
-                                       :num-choices num-choices
+                                       ::DB/direction direction
+                                       ::DB/num-choices num-choices
                                        :show-choices show-choices)]]
       (testing (str "For options " these-options)
         (is (pos? (checker expected these-options)))
@@ -97,15 +98,15 @@
         (when (= show-choices :multiple-choice)
           (testing "More reward for right when more choices"
             (is (<= (checker expected these-options)
-                    (checker expected (update these-options :num-choices inc)))))
+                    (checker expected (update these-options ::DB/num-choices inc)))))
           (testing "More penalty for wrong when more choices"
             (is (>= (checker wrong these-options)
-                    (checker wrong (update these-options :num-choices inc))))))))))
+                    (checker wrong (update these-options ::DB/num-choices inc))))))))))
 
 
 (deftest inc-dec
   (let [db (logic/first-turn default-db)
-        num-buckets (get-in db [::DB/options :num-buckets])]
+        num-buckets (get-in db [::DB/options ::DB/num-buckets])]
     (is (= 0 (logic/prev-bucket db 0)))
     (is (= 0 (logic/prev-bucket db 1)))
     (is (= 1 (logic/prev-bucket db 2)))
@@ -129,8 +130,8 @@
       (testing "right answer"
         (let [db-after (logic/update-turn db-before expected)
               new-prev-turn (get-in db-after [::turn/turn ::turn/prev-turn])]
-          (is (> (get-in db-after [::DB/dynamic :score])
-                 (get-in db-before [::DB/dynamic :score])))
+          (is (> (get-in db-after [::DB/dynamic ::DB/score])
+                 (get-in db-before [::DB/dynamic ::DB/score])))
           (is (= (::turn/word new-prev-turn) (::turn/word old-turn)))
           (is (= (::turn/correct-answer new-prev-turn) expected))
           (is (= (::turn/players-answer new-prev-turn) expected))))
@@ -138,8 +139,8 @@
       (testing "wrong answer"
         (let [db-after (logic/update-turn db-before wrong)
               new-prev-turn (get-in db-after [::turn/turn ::turn/prev-turn])]
-          (is (< (get-in db-after [::DB/dynamic :score])
-                 (get-in db-before [::DB/dynamic :score])))
+          (is (< (get-in db-after [::DB/dynamic ::DB/score])
+                 (get-in db-before [::DB/dynamic ::DB/score])))
           (is (= (::turn/word new-prev-turn) (::turn/word old-turn)))
           (is (= (::turn/correct-answer new-prev-turn) expected))
           (is (= (::turn/players-answer new-prev-turn) wrong)))))))

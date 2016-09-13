@@ -1,6 +1,7 @@
 (ns flashcards.views
   "Catch-all for page-view code that has not yet been broken out"
   (:require
+   [flashcards.db :as DB]
    [flashcards.dicts.dicts :as dicts]
    [flashcards.play-view :as play-view]
    [flashcards.string-table :refer [lstr]]
@@ -13,9 +14,9 @@
 ;; home
 
 (defn title []
-  (let [ui (re-frame/subscribe [:ui-language])
-        name (re-frame/subscribe [:name])
-        dict (re-frame/subscribe [:option :dictionary])]
+  (let [ui (re-frame/subscribe [::DB/ui-language])
+        name (re-frame/subscribe [::DB/name])
+        dict (re-frame/subscribe [:option ::DB/dictionary])]
     (fn []
       [re-com/v-box
        :align :center
@@ -24,15 +25,15 @@
                   ]])))
 
 (defn credits []
-  (let [ui (re-frame/subscribe [:ui-language])
-        version (re-frame/subscribe [:version])]
+  (let [ui (re-frame/subscribe [::DB/ui-language])
+        version (re-frame/subscribe [::DB/version])]
     [re-com/v-box
      :children [[re-com/title :label (str (lstr @ui :prototype) " v" @version) :level :level3]]]))
 
 (defn option-chooser [option disabled? presentation-fn]
-  (let [ui (re-frame/subscribe [:ui-language])
+  (let [ui (re-frame/subscribe [::DB/ui-language])
         option-value (re-frame/subscribe [:option option])
-        option-choices (re-frame/subscribe [:valid-options option])
+        option-choices (re-frame/subscribe [::DB/valid-options option])
         model (reagent/atom :both)]
     (fn [option disabled?]
       (let [option-map (mapv (fn [choice]
@@ -53,15 +54,15 @@
                      :on-change #(re-frame/dispatch [:set-option option %])]]]))))
 
 (defn options []
-  (let [ui (re-frame/subscribe [:ui-language])
+  (let [ui (re-frame/subscribe [::DB/ui-language])
         show-choices (re-frame/subscribe [:show-choices])
-        dict (re-frame/subscribe [:option :dictionary])]
+        dict (re-frame/subscribe [:option ::DB/dictionary])]
     (fn []
       [re-com/v-box
        :gap "0.6em"
        :children [[re-com/title :label (lstr @ui :options) :level :level2]
-                  [option-chooser :dictionary false nil]
-                  [option-chooser :direction false #(vector % (str (let [dic (dicts/get-dictionary @dict)
+                  [option-chooser ::DB/dictionary false nil]
+                  [option-chooser ::DB/direction false #(vector % (str (let [dic (dicts/get-dictionary @dict)
                                                                          from (lstr @ui (:from-language dic))
                                                                          to (lstr @ui (:to-language dic))]
                                                                      (str from
@@ -73,24 +74,24 @@
                                                                             :known-to-new " <- " #_" \u2B95 "
                                                                             :both " <-> "        #_" \u2B0C ")
                                                                           to))))]
-                  [option-chooser :show-choices false nil]
-                  [option-chooser :num-choices (= @show-choices :free-text) nil]
-                  [option-chooser :ui-language false nil]]])))
+                  [option-chooser ::DB/show-choices false nil]
+                  [option-chooser ::DB/num-choices (= @show-choices :free-text) nil]
+                  [option-chooser ::DB/ui-language false nil]]])))
 
 
 (defn link-to-about-page []
-  (let [ui (re-frame/subscribe [:ui-language])
-        name (re-frame/subscribe [:name])]
+  (let [ui (re-frame/subscribe [::DB/ui-language])
+        name (re-frame/subscribe [::DB/name])]
     [re-com/hyperlink-href
      :label (str (lstr @ui :about) " " (lstr @ui @name))
      :href "#/about"]))
 
 (defn link-to-play-page []
-  (let [ui (re-frame/subscribe [:ui-language])]
+  (let [ui (re-frame/subscribe [::DB/ui-language])]
     [re-com/hyperlink-href :label (lstr @ui :start-game) :href "#/play"]))
 
 (defn link-to-home-page []
-  (let [ui (re-frame/subscribe [:ui-language])]
+  (let [ui (re-frame/subscribe [::DB/ui-language])]
     [re-com/hyperlink-href :label (lstr @ui :go-to-homepage) :href "#/"]))
 
 (defn home-panel []
@@ -146,7 +147,7 @@
 (defmethod panels :default [] [:div])
 
 (defn main-panel []
-  (let [ui (re-frame/subscribe [:ui-language])
+  (let [ui (re-frame/subscribe [::DB/ui-language])
         active-panel (re-frame/subscribe [:active-panel])]
     (fn []
       [re-com/v-box

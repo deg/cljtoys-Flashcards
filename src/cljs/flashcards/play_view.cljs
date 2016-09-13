@@ -2,6 +2,7 @@
   "Presentation view of the main gameplay view"
   (:require-macros [clojure.core.strint :as strint])
   (:require
+   [flashcards.db :as DB]
    [flashcards.dicts.dicts :as dicts]
    [flashcards.string-table :refer [lstr]]
    [flashcards.turn :as turn]
@@ -12,9 +13,9 @@
    [reagent.core :as reagent]))
 
 (defn score-bar-game-score []
-  (let [ui (re-frame/subscribe [:ui-language])
-        score (re-frame/subscribe [:score])
-        multiplier (re-frame/subscribe [:multiplier])]
+  (let [ui (re-frame/subscribe [::DB/ui-language])
+        score (re-frame/subscribe [::DB/score])
+        multiplier (re-frame/subscribe [::DB/multiplier])]
     [re-com/h-box
      :justify :end
      :children [(lstr @ui :score)
@@ -27,11 +28,11 @@
                 "]"]]))
 
 (defn score-bar-buckets []
-  (let [ui (re-frame/subscribe [:ui-language])
+  (let [ui (re-frame/subscribe [::DB/ui-language])
         counts (re-frame/subscribe [:bucket-counts])
-        num-buckets (re-frame/subscribe [:option :num-buckets])
+        num-buckets (re-frame/subscribe [:option ::DB/num-buckets])
         current-bucket (re-frame/subscribe [::turn/bucket])
-        active-buckets (re-frame/subscribe [:active-buckets])
+        active-buckets (re-frame/subscribe [::DB/active-buckets])
         nbsp (gstring/unescapeEntities "&nbsp;")]
     [re-com/h-box
      :justify :end
@@ -51,22 +52,22 @@
                                          (range @num-buckets)))))]]))
 
 (defn score-bar-latest-turn []
-  (let [ui (re-frame/subscribe [:ui-language])
+  (let [ui (re-frame/subscribe [::DB/ui-language])
         prev-turn (re-frame/subscribe [::turn/prev-turn])
-        dict (re-frame/subscribe [:option :dictionary])]
+        dict (re-frame/subscribe [:option ::DB/dictionary])]
     (re-com/h-box
      :justify :center
      :children [(when @prev-turn
-                  (let [#::turn{:keys [word players-answer correct-answer other-choices]} @prev-turn
+                  (let [#::turn{:keys [word players-answer correct-answer other-word-items]} @prev-turn
                         answer-type (:answer-type (dicts/get-dictionary @dict))]
                     (if  (= players-answer correct-answer)
                       (lstr @ui :correct-score)
                       (let [forward? (::turn/forward? @prev-turn)
                             answer-type (lstr @ui answer-type)
-                            source (if forward? ::turn/word ::turn/correct-answer)
-                            dest (if forward? ::turn/correct-answer ::turn/word)
+                            source (if forward? ::turn/word ::turn/answer)
+                            dest (if forward? ::turn/answer ::turn/word)
                             word-for-players-answer (source (first (filter #(= (dest %) players-answer)
-                                                                           other-choices)))
+                                                                           other-word-items)))
                             line1-format (if forward? :incorrect-score-forward :incorrect-score-reverse)
                             line2-format (if forward? :incorrect-score-forward-second-line :incorrect-score-reverse-second-line)]
                         [re-com/v-box
@@ -109,17 +110,17 @@
          :label @this-answer]))))
 
 (defn answer-cards []
-  (let [num-choices (re-frame/subscribe [:num-choices])]
+  (let [num-choices (re-frame/subscribe [::DB/num-choices])]
     [re-com/v-box
      :class "target-words"
-     :children (let [width 2 ;(if (<= @num-choices 4) 2 3)
+     :children (let [width 2
                      rows (partition width width nil (range @num-choices))]
                  (mapv (fn [row]
                          [re-com/h-box
                           :children (mapv (fn [n] [card n]) row)]) rows))]))
 
 (defn full-card []
-  (let [ui (re-frame/subscribe [:ui-language])
+  (let [ui (re-frame/subscribe [::DB/ui-language])
         word (re-frame/subscribe [::turn/word])
         show-choices (re-frame/subscribe [:show-choices])
         text (re-frame/subscribe [::turn/text])]
@@ -137,7 +138,7 @@
                                    (re-frame/dispatch [:score-answer % :allow-partial true]))])])]))
 
 (defn reset-game []
-  (let [ui (re-frame/subscribe [:ui-language])]
+  (let [ui (re-frame/subscribe [::DB/ui-language])]
     [re-com/box
      :child [:a
              {:class "psuedo-link"
