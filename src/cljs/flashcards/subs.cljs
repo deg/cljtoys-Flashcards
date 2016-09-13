@@ -30,6 +30,11 @@
 (simple-sub ::DB/ui-language [::DB/options ::DB/ui-language])
 
 
+(re-frame/reg-sub-raw
+ ::DB/all
+ (fn [db [_ n]]
+   (-> @db reaction)))
+
 ;(simple-sub ::turn/all-answers [::turn/turn ::turn/all-answers])
 (re-frame/reg-sub-raw
  ::turn/all-answers

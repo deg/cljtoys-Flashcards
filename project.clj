@@ -42,7 +42,8 @@
   {:dev
    {:dependencies [[figwheel-sidecar "0.5.6"]
                    [com.cemerick/piggieback "0.2.1"]
-                   [org.clojure/test.check "0.9.0"]]
+                   [org.clojure/test.check "0.9.0"]
+                   [data-frisk-reagent "0.2.6"]]
 
     :plugins      [[lein-figwheel "0.5.6"]
                    [lein-doo "0.1.6"]
