@@ -2,6 +2,7 @@
   "Catch-all for page-view code that has not yet been broken out"
   (:require
    [datafrisk.core :refer [DataFriskShell]]
+   [flashcards.config :as config]
    [flashcards.db :as DB]
    [flashcards.dicts.dicts :as dicts]
    [flashcards.play-view :as play-view]
@@ -157,4 +158,5 @@
        :height "100%"
        :children [[title]
                   [panels @active-panel]
-                  [DataFriskShell @all-state]]])))
+                  (when config/debug?
+                    [DataFriskShell @all-state])]])))
