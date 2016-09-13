@@ -1,6 +1,6 @@
 (ns flashcards.utils
   "Random utilities"
-  (:require))
+  (:require [cljs.pprint :refer [pprint]]))
 
 (defn arabic-char? [char]
   (let [char-code (.charCodeAt char 0)]
@@ -55,12 +55,13 @@
 (defn spy
   "Handy debugging aid. [TODO] Should only be exposed in dev env"
   [label x]
-  (prn label x)
+  (prn label)
+  (pprint x)
   x)
 
 (defn spy-side
   "Handy debugging aid. [TODO] Should only be exposed in dev env"
   [label to-print to-return]
-  (prn label to-print)
+  (pprint label to-print)
   to-return)
 
