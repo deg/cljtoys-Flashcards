@@ -2,7 +2,6 @@
   "Game logic. Everything here should be pure functions"
   (:require
    [cljs.spec :as s]
-   [cljs.spec.test :as stest]
    [clojure.set :as set]
    [clojure.string :as str]
    [flashcards.db :as DB]
