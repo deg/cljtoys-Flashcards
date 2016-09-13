@@ -7,7 +7,7 @@
    [flashcards.db :as DB]
    [flashcards.dicts.dicts :as dicts]
    [flashcards.turn :as turn]
-   [flashcards.utils :as utils]
+   [flashcards.utils :refer [answers=]]
    ))
 
 (s/check-asserts true)
@@ -58,7 +58,7 @@
     (check-db db)
     (check-db (assoc db ::turn/turn
                      (merge (::turn/turn db)
-                            {::turn/text ""}
+                            {::turn/players-answer ""}
                             (turn-data db correct-word-item other-word-items))))))
 
 (defn first-turn [db]
@@ -83,7 +83,7 @@
                                :new-to-known 1.0
                                :known-to-new 1.6
                                :both 2.0)]
-    (if (= players-answer correct-answer)
+    (if (answers= players-answer correct-answer)
       (if free-text? 100 (* base-right direction-multiplier choices-multiplier))
       (if free-text? -10 (/ base-wrong direction-multiplier)))))
 

@@ -6,7 +6,7 @@
    [flashcards.dicts.dicts :as dicts]
    [flashcards.string-table :refer [lstr]]
    [flashcards.turn :as turn]
-   [flashcards.utils :refer [arabic? hebrew?]]
+   [flashcards.utils :refer [arabic? hebrew? answers=]]
    [goog.string :as gstring]
    [re-com.core :as re-com :refer-macros [handler-fn]]
    [re-frame.core :as re-frame]
@@ -60,7 +60,7 @@
      :children [(when @prev-turn
                   (let [#::turn{:keys [word players-answer correct-answer other-word-items]} @prev-turn
                         answer-type (:answer-type (dicts/get-dictionary @dict))]
-                    (if  (= players-answer correct-answer)
+                    (if  (answers= players-answer correct-answer)
                       (lstr @ui :correct-score)
                       (let [forward? (::turn/forward? @prev-turn)
                             answer-type (lstr @ui answer-type)
@@ -101,7 +101,7 @@
             unpressed-class (str "unpressed " base-class)]
         [re-com/hyperlink
          :class unpressed-class
-         :on-click #(re-frame/dispatch [:score-answer @this-answer :allow-partial false])
+         :on-click #(re-frame/dispatch [:update-players-answer @this-answer true])
          ;; [TODO] This pressed/unpressed nonsense is here because I couldn't get
          ;; buttons or links to behave right otherwise on touch screens. In all
          ;; other attempts, the button would remain highlighted after being acted upon.
@@ -123,19 +123,24 @@
   (let [ui (re-frame/subscribe [::DB/ui-language])
         word (re-frame/subscribe [::turn/word])
         show-choices (re-frame/subscribe [:show-choices])
-        text (re-frame/subscribe [::turn/text])]
+        players-answer (re-frame/subscribe [::turn/players-answer])]
     [re-com/v-box
-     :class "fc-full-card"
-     :children (if (not @word)
-                 [(lstr @ui :buckets-empty)]
-                 [[subject-word]
-                  (if (= @show-choices :multiple-choice)
-                    [answer-cards]
-                    [re-com/input-text
-                     :model text
-                     :on-change #(do
-                                   (reset! text %)
-                                   (re-frame/dispatch [:score-answer % :allow-partial true]))])])]))
+       :class "fc-full-card"
+       :children (if (not @word)
+                   [(lstr @ui :buckets-empty)]
+                   [[subject-word]
+                    (if (= @show-choices :multiple-choice)
+                      [answer-cards]
+                      [re-com/v-box
+                       :gap "0.5em"
+                       :align :center
+                       :children [[re-com/input-text
+                                   :model players-answer
+                                   :change-on-blur? false
+                                   :on-change #(re-frame/dispatch [:update-players-answer % false])]
+                                  [re-com/button
+                                   :label "Done"
+                                   :on-click #(re-frame/dispatch [:update-players-answer @players-answer true])]]])])]))
 
 (defn reset-game []
   (let [ui (re-frame/subscribe [::DB/ui-language])]

@@ -25,7 +25,7 @@
 (simple-sub ::DB/active-buckets [::DB/dynamic ::DB/active-buckets])
 (simple-sub ::DB/multiplier [::DB/dynamic ::DB/multiplier])
 (simple-sub ::turn/prev-turn [::turn/turn ::turn/prev-turn])
-(simple-sub ::turn/text [::turn/turn ::turn/text])
+(simple-sub ::turn/players-answer [::turn/turn ::turn/players-answer])
 (simple-sub ::turn/bucket [::turn/turn ::turn/correct-word-item ::turn/bucket])
 (simple-sub ::DB/ui-language [::DB/options ::DB/ui-language])
 

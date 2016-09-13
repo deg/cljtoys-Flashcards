@@ -5,6 +5,7 @@
    [flashcards.db :as DB]
    [flashcards.db-config :refer [default-db]]
    [flashcards.logic :refer [first-turn reset-game update-turn]]
+   [flashcards.turn :as turn]
    [re-frame.core :as re-frame]))
 
 
@@ -43,9 +44,12 @@
    (reset-game db)))
 
 (re-frame/reg-event-db
- :score-answer
- (fn [db [_ players-answer]]
-   (update-turn db (clojure.string/trim players-answer))))
+ :update-players-answer
+ (fn [db [_ new-answer score?]]
+   (let [db (assoc-in db [::turn/turn ::turn/players-answer] new-answer)]
+     (if score?
+       (update-turn db (clojure.string/trim new-answer))
+       db))))
 
 (re-frame/reg-event-db
  :set-active-buckets

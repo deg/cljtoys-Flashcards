@@ -28,10 +28,10 @@
 
 (s/def ::turn (s/nilable ;; [TODO] Try to get rid of this. Just needed at startup
                (s/keys :req [::word
+                             ::players-answer
                              ::correct-answer
                              ::correct-word-item
                              ::other-word-items
-                             ::all-answers
                              ::forward?
-                             ::text]
+                             ::all-answers]
                        :opt [::prev-turn])))

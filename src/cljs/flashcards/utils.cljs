@@ -18,6 +18,8 @@
 (defn hebrew? [string]
   (some hebrew-char? (seq string)))
 
+(defn answers= [ans1 ans2]
+  (= (clojure.string/lower-case ans1) (clojure.string/lower-case ans2)))
 
 (defn spy
   "Handy debugging aid. [TODO] Should only be exposed in dev env"
