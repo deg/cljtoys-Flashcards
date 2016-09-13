@@ -21,6 +21,37 @@
 (defn answers= [ans1 ans2]
   (= (clojure.string/lower-case ans1) (clojure.string/lower-case ans2)))
 
+
+(defn- weighted-rand-nth-helper
+  "Helper function, pulled out to ease testing. This way we can test the logic here,
+   without rand getting in the way."
+  [coll weight-fn rand-val]
+  (loop [rand-ptr rand-val
+         [item & rest] (seq coll)]
+    (let [item-weight (weight-fn item)]
+      (if (>= item-weight rand-ptr)
+        item
+        (recur (- rand-ptr item-weight) rest)))))
+
+(defn weighted-rand-nth
+  "Like rand-nth, but gives a weighted probability to each item in the sequence. The weight of each
+   is determined by calling weight-fn on the item."
+  [coll weight-fn]
+  (weighted-rand-nth-helper coll weight-fn (rand (reduce + (map weight-fn coll)))))
+
+(defn choose-weighted-n
+  "Choose multiple weighted elements, without duplicates"
+  [n coll weight-fn]
+  (loop [n n
+         coll coll
+         results []]
+    (if (or (empty? coll) (<= n 0))
+      results
+      (let [result (weighted-rand-nth coll weight-fn)
+            remainder (remove #{result} coll)]
+        (recur (dec n) remainder (conj results result))))))
+
+
 (defn spy
   "Handy debugging aid. [TODO] Should only be exposed in dev env"
   [label x]

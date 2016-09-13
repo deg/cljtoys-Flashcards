@@ -4,10 +4,11 @@
    [cljs.spec :as s]
    [cljs.spec.test :as stest]
    [clojure.set :as set]
+   [clojure.string :as str]
    [flashcards.db :as DB]
    [flashcards.dicts.dicts :as dicts]
    [flashcards.turn :as turn]
-   [flashcards.utils :refer [answers=]]
+   [flashcards.utils :refer [answers= choose-weighted-n]]
    ))
 
 (s/check-asserts true)
@@ -29,19 +30,41 @@
         :args #(::DB/db (:db %))
         :fn ::turn/word-item)
 
-(defn- get-other-word-items [db correct-word-item]
-  (let [word-items (get-in db [::DB/dynamic :bucketed-dictionary :words])
-        num-needed (dec (get-in db [::DB/options ::DB/num-choices]))]
-    (->> word-items
-         shuffle
-         (remove #(= % correct-word-item))
-         (take num-needed))))
+(defn turn-forward? [db]
+  (let [direction (get-in db [::DB/options ::DB/direction])]
+    (or (= direction :new-to-known)
+        (and (= direction :both) (zero? (rand-int 2))))))
 
-(defn- turn-data [db correct-word-item other-word-items]
-  (let [direction (get-in db [::DB/options ::DB/direction])
-        forward? (or (= direction :new-to-known)
-                     (and (= direction :both) (zero? (rand-int 2))))
-        word ((if forward? ::turn/word ::turn/answer) correct-word-item)
+(defn word-similarity
+  "Rank how similar two words are.  Identical words return 1.0. Very different words approach a score of 0.0"
+  [word1 word2]
+  (let [word1 (str/upper-case word1)
+        word2 (str/upper-case word2)
+        max-len (max (count word1) (count word2))
+        min-len (min (count word1) (count word2))]
+    (Math.pow (* (Math.pow (/ min-len max-len) 0.2)
+                 (if (= (first word1) (first word2)) 1.0 0.5)
+                 (if (= (second word1) (second word2)) 1.0 0.8)
+                 (if (= (last word1) (last word2)) 1.0 0.7))
+              2)))
+
+(defn score-words [correct-word other-words]
+  (map (juxt identity (partial word-similarity correct-word)) other-words))
+
+(defn- get-other-word-items [db correct-word-item forward?]
+  (let [word-items (get-in db [::DB/dynamic :bucketed-dictionary :words])
+        num-needed (dec (get-in db [::DB/options ::DB/num-choices]))
+        accessor (if forward? ::turn/answer ::turn/word)
+        word (accessor correct-word-item)
+        others (remove #{word} (map accessor word-items))
+        with-scores (sort-by second (score-words word others))
+        chosen-others (map first (choose-weighted-n num-needed with-scores second))]
+    (shuffle (map (fn [word]
+                    (first (filter #(= word (accessor %)) word-items)))
+                  chosen-others))))
+
+(defn- turn-data [db correct-word-item other-word-items forward?]
+  (let [word ((if forward? ::turn/word ::turn/answer) correct-word-item)
         correct-answer ((if forward? ::turn/answer ::turn/word) correct-word-item)
         other-answers (map (if forward? ::turn/answer ::turn/word) other-word-items)
         all-answers (shuffle (conj other-answers correct-answer))]
@@ -54,12 +77,13 @@
 
 (defn- setup-turn [db]
   (let [correct-word-item (get-word-item db)
-        other-word-items (get-other-word-items db correct-word-item)]
+        forward? (turn-forward? db)
+        other-word-items (get-other-word-items db correct-word-item forward?)]
     (check-db db)
     (check-db (assoc db ::turn/turn
                      (merge (::turn/turn db)
                             {::turn/players-answer ""}
-                            (turn-data db correct-word-item other-word-items))))))
+                            (turn-data db correct-word-item other-word-items forward?))))))
 
 (defn first-turn [db]
   (-> db
