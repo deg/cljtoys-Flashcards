@@ -16,8 +16,8 @@
   (when config/debug?
     (enable-console-print!)
     (println "dev mode")
-    (devtools/set-pref! :install-sanity-hints true) ;; See https://github.com/binaryage/cljs-devtools/releases/tag/v0.4.0
-    (devtools/install!)))
+    ;;(devtools/set-pref! :install-sanity-hints true) ;; See https://github.com/binaryage/cljs-devtools/releases/tag/v0.4.0
+    (devtools/install! [:formatters :hints :async])))
 
 (defn mount-root []
   (reagent/render [views/main-panel]

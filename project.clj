@@ -3,7 +3,7 @@
                  [org.clojure/clojurescript "1.9.229"]
                  [org.clojure/core.incubator "0.1.4"]
                  [reagent "0.6.0-rc"]
-                 [binaryage/devtools "0.6.1"]
+                 [binaryage/devtools "0.8.1"]
                  [re-frame "0.8.0"]
                  [re-com "0.8.3"]
                  [secretary "1.2.3"]
