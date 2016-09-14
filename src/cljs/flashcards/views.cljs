@@ -37,12 +37,15 @@
         option-choices (re-frame/subscribe [::DB/valid-options option])
         model (reagent/atom :both)]
     (fn [option disabled?]
-      (let [option-map (mapv (fn [choice]
-                               (let [choice ((or presentation-fn identity) choice)
-                                     id    (if (vector? choice) (first choice)  choice)
-                                     label (if (vector? choice) (second choice) choice)]
-                                 {:id id :label (lstr @ui label)}))
-                             @option-choices)]
+      (let [option-map (sort-by :order (mapv (fn [choice counter]
+                                               (let [choice ((or presentation-fn identity) choice)
+                                                     id    (if (vector? choice) (first choice)  choice)
+                                                     label (if (vector? choice) (second choice) choice)]
+                                                 {:id id :label (lstr @ui label)
+                                                  ;; [TODO] Kludge! Sort dictionaries by name
+                                                  :order (if (= option ::DB/dictionary) id counter)}))
+                                             @option-choices (range))
+                                )]
         [re-com/h-box
          :justify :between
          :gap "1em"
