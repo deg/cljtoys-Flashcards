@@ -23,8 +23,7 @@
       [re-com/v-box
        :align :center
        :children [[re-com/title :label (lstr @ui @name) :level :level2]
-                  [re-com/title :label (lstr @ui (:name (dicts/get-dictionary @dict))) :level :level3]
-                  ]])))
+                  [re-com/title :label (lstr @ui (:name (dicts/get-dictionary @dict))) :level :level3]]])))
 
 (defn credits []
   (let [ui (re-frame/subscribe [::DB/ui-language])
