@@ -1,4 +1,4 @@
-i(ns flashcards.db-config
+(ns flashcards.db-config
   "Default app state"
   (:require
    [cljs.spec :as s]
