@@ -13,8 +13,8 @@
                  [yogthos/config "0.8"]
                  [ring "1.4.0"]
 
-                 ;; [TOOD] Figure out how to move this into dev profile, without production building barfing on reference
-                 [data-frisk-reagent "0.2.6"]
+;;                 ;; [TOOD] Figure out how to move this into dev profile, without production building barfing on reference
+;;                 [data-frisk-reagent "0.2.6"]
 
                  ;; Atom interface to local storage
                  [alandipert/storage-atom "2.0.1"]]
