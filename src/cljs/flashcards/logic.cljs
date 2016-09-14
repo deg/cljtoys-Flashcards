@@ -86,7 +86,7 @@
 
 (defn first-turn [db]
   (-> db
-      ;check-db
+      check-db
       (assoc-in [::DB/dynamic ::DB/score] 0)
       (assoc-in [::DB/dynamic ::DB/multiplier] 1)
       (assoc-in [::DB/dynamic :bucketed-dictionary]
