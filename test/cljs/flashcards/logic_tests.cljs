@@ -11,7 +11,6 @@
 (deftest startup
   (testing "initialize db"
     (let [initialized (logic/first-turn default-db)]
-      ()
       (is (= (get-in initialized [::DB/dynamic ::DB/score]) 0))
       (is (= (get-in initialized [::DB/dynamic ::DB/multiplier]) 1))
       (let [turn (get-in initialized [::turn/turn])]

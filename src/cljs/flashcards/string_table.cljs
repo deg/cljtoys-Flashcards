@@ -4,7 +4,13 @@
    [clojure.core.strint :as strint]))
 
 (def ^:private string-table
-  {:11th-grade-arabic {:english "11th-grade Arabic"  :hebrew "ערבית - אוצר מילים י\"א"}
+  {:11th-grade-arabic {:english "Aviva's 11th-grade Arabic"  :hebrew "ערבית של אביבה - י\"א"}
+   :7th-grade-arabic-cms  {:english "7th-grade Arabic"  :hebrew "ערבית - אוצר מילים ז"}
+   :8th-grade-arabic-cms  {:english "8th-grade Arabic"  :hebrew "ערבית - אוצר מילים ח"}
+   :9th-grade-arabic-cms  {:english "9th-grade Arabic"  :hebrew "ערבית - אוצר מילים ט"}
+   :10th-grade-arabic-cms {:english "10th-grade Arabic" :hebrew "ערבית - אוצר מילים י"}
+   :11th-grade-arabic-cms {:english "11th-grade Arabic" :hebrew "ערבית - אוצר מילים י\"א"}
+   :12th-grade-arabic-cms {:english "12th-grade Arabic" :hebrew "ערבית - אוצר מילים י\"ב"}
    :about             {:english "About"              :hebrew "אודות"}
    :and-not           {:english "and not"            :hebrew "ולא"}
    :arabic            {:english "arabic"             :hebrew "ערבית"}
