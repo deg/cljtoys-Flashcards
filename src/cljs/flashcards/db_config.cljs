@@ -1,4 +1,4 @@
-(ns flashcards.db-config
+i(ns flashcards.db-config
   "Default app state"
   (:require
    [cljs.spec :as s]
@@ -13,7 +13,7 @@
   (s/assert ::DB/db
             {::DB/static {::DB/name :flashcards
                           ::DB/version "0.0.1"
-                          ::DB/valid-options {::DB/dictionary (into [] (dicts/get-names))
+                          ::DB/valid-options {::DB/dictionary (vec (dicts/get-names))
                                               ::DB/direction [:new-to-known :known-to-new :both]
                                               ::DB/show-choices [:multiple-choice :free-text]
                                               ::DB/num-choices (range 2 13)
