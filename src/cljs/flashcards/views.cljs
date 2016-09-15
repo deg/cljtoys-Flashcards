@@ -1,7 +1,7 @@
 (ns flashcards.views
   "Catch-all for page-view code that has not yet been broken out"
   (:require
-;;   [datafrisk.core :refer [DataFriskShell]]
+   [datafrisk.core :refer [DataFriskShell]]
    [flashcards.config :as config]
    [flashcards.db :as DB]
    [flashcards.dicts.dicts :as dicts]
@@ -151,7 +151,7 @@
 (defmethod panels :default [] [:div])
 
 (defn main-panel []
-  (let [;;all-state (re-frame/subscribe[::DB/all])
+  (let [all-state (re-frame/subscribe[::DB/all])
         ui (re-frame/subscribe [::DB/ui-language])
         active-panel (re-frame/subscribe [::DB/active-panel])]
     (fn []
@@ -160,6 +160,5 @@
        :height "100%"
        :children [[title]
                   [panels @active-panel]
-;;                  (when config/debug?
-;;                    [DataFriskShell @all-state])
-                  ]])))
+                  (when config/debug?
+                    [DataFriskShell @all-state])]])))

@@ -2,7 +2,9 @@
   :dependencies [[org.clojure/clojure "1.9.0-alpha12"]
                  [org.clojure/clojurescript "1.9.229"]
                  [org.clojure/core.incubator "0.1.4"]
-                 [reagent "0.6.0-rc"]
+                 ;; (Exclusion needed in order to work with data-frisk in Heroku/Foreman [uberjar] build)
+                 ;; [TODO] But, may be fixed soon (written 15Sep16).  See https://github.com/Odinodin/data-frisk-reagent/issues/8
+                 [reagent "0.6.0-rc" :exclusions [cljsjs/react]]
                  [binaryage/devtools "0.8.1"]
                  [re-frame "0.8.0"]
                  [re-com "0.8.3"]
@@ -13,8 +15,8 @@
                  [yogthos/config "0.8"]
                  [ring "1.4.0"]
 
-;;                 ;; [TOOD] Figure out how to move this into dev profile, without production building barfing on reference
-;;                 [data-frisk-reagent "0.2.6"]
+                 ;; [TOOD] Figure out how to move this into dev profile, without production building barfing on reference
+                 [data-frisk-reagent "0.2.6"]
 
                  ;; Atom interface to local storage
                  [alandipert/storage-atom "2.0.1"]]
