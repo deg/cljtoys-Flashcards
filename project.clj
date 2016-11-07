@@ -5,7 +5,7 @@
                  [reagent "0.6.0"]
                  [binaryage/devtools "0.8.1"]
                  [re-frame "0.8.0"]
-                 [re-com "0.9.0"]
+                 [re-com "1.0.0"]
                  [secretary "1.2.3"]
                  [garden "1.3.2"]
                  [ns-tracker "0.3.0"]
@@ -14,7 +14,7 @@
                  [ring "1.4.0"]
 
                  ;; [TOOD] Figure out how to move this into dev profile, without production building barfing on reference
-                 [data-frisk-reagent "0.3.0"]
+                 [data-frisk-reagent "0.3.1"]
 
                  ;; Atom interface to local storage
                  [alandipert/storage-atom "2.0.1"]]
