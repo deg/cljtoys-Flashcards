@@ -15,6 +15,12 @@ Better, it can be run from Emacs:
 - `C-c M-J` or `M-X cider-jack-in-clojurescript`
 - Browse to [http://localhost:3449/](http://localhost:3449/)
 
+#### Deploying
+
+Deploy to Heroku with `git push heroku`
+
+Test/simulate Herokup build locally with `lein clean && lein uberjar && foreman start`
+
 #### Testing
 
 `lein doo phantom test auto`
