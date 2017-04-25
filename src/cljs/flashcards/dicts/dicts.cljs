@@ -9,6 +9,8 @@
    [flashcards.dicts.arabic-11 :as arabic-11]
    [flashcards.dicts.arabic-12 :as arabic-12]
    [flashcards.dicts.arabic-grade11 :as arabic-grade11]
+   [flashcards.dicts.mafmar :as mafmar]
+   [flashcards.dicts.expressions :as expressions]
    [flashcards.dicts.state-capitals :as state-capitals]
    [flashcards.turn :as turn]))
 
@@ -21,6 +23,8 @@
    :arabic-11 arabic-11/dict
    :arabic-12 arabic-12/dict
    :arabic-grade11 arabic-grade11/dict
+   :mafmar mafmar/dict
+   :expressions expressions/dict
    :state-capitals state-capitals/dict})
 
 
@@ -33,6 +37,8 @@
    :11th-grade-arabic-cms (local-storage (atom {}) :buckets-arabic-11)
    :12th-grade-arabic-cms (local-storage (atom {}) :buckets-arabic-12)
    :11th-grade-arabic (local-storage (atom {}) :buckets-arabic-grade11)
+   :mafmar (local-storage (atom {}) :buckets-mafmar)
+   :expressions (local-storage (atom {}) :buckets-expressions)
    :state-capitals (local-storage (atom {}) :buckets-state-capitals)})
 
 
